@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node -e \"if(process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith('file:')) require('child_process').execSync('npx prisma db push --accept-data-loss && npx tsx prisma/seed.ts', {stdio:'inherit'})\" && next build",
+    "build": "node -e \"const u = (process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith('file:')) ? process.env.DATABASE_URL : (process.env.DATABASE_URL_POOLED || process.env.POSTGRES_PRISMA_URL || process.env.POSTGRES_URL); if (u) { process.env.DATABASE_URL = u; require('child_process').execSync('npx prisma db push --accept-data-loss && npx tsx prisma/seed.ts', {stdio:'inherit', env: process.env}); }\" && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",

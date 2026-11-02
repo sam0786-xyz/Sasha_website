@@ -1,5 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 
+// If DATABASE_URL was copied from .env as file:./sasha.db, auto-fallback to Vercel Postgres storage env vars
+const resolvedDbUrl =
+  process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:")
+    ? process.env.DATABASE_URL
+    : process.env.DATABASE_URL_POOLED ||
+      process.env.POSTGRES_PRISMA_URL ||
+      process.env.POSTGRES_URL ||
+      process.env.PRISMA_DATABASE_URL ||
+      process.env.DATABASE_URL;
+
+if (resolvedDbUrl) {
+  process.env.DATABASE_URL = resolvedDbUrl;
+}
+
 export type Job = {
   id: string;
   title: string;
