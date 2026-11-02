@@ -4,7 +4,11 @@ import { PrismaClient } from "@prisma/client";
 const resolvedDbUrl =
   process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:")
     ? process.env.DATABASE_URL
-    : process.env.DATABASE_URL_POOLED ||
+    : process.env.sasha_DATABASE_URL ||
+      process.env.sasha_DATABASE_URL_POOLED ||
+      process.env.sasha_POSTGRES_URL ||
+      process.env.sasha_PRISMA_DATABASE_URL ||
+      process.env.DATABASE_URL_POOLED ||
       process.env.POSTGRES_PRISMA_URL ||
       process.env.POSTGRES_URL ||
       process.env.PRISMA_DATABASE_URL ||
