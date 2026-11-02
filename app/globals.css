@@ -3376,3 +3376,448 @@ button, input, textarea, select {
     flex-direction: column;
   }
 }
+
+/* ==========================================================================
+   THEME TOGGLE BUTTON
+   ========================================================================== */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-subtle-2);
+  border: 1px solid var(--border-light);
+  color: var(--text-body);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-card);
+  color: var(--orange);
+  border-color: var(--orange);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.theme-toggle-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   LANGUAGE SELECTION WELCOME MODAL
+   ========================================================================== */
+.lang-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 32px);
+  animation: modalFadeIn 0.25s ease-out forwards;
+}
+
+.lang-modal-card {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border-radius: 24px;
+  max-width: 620px;
+  width: 100%;
+  max-height: 94vh;
+  overflow-y: auto;
+  padding: clamp(28px, 4.5vw, 40px);
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  border: 1px solid var(--border-light);
+  animation: modalZoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lang-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-subtle-2);
+  border: 1px solid var(--border-light);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lang-modal-close:hover {
+  background: var(--border-card);
+  color: var(--text-main);
+  transform: rotate(90deg);
+}
+
+.lang-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.lang-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 92, 27, 0.25);
+}
+
+.lang-modal-logo {
+  margin: 0 auto 12px;
+  border-radius: 10px;
+  background: #0f172a;
+  padding: 4px;
+  border: 1px solid rgba(255, 92, 27, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.lang-modal-title {
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.lang-modal-multi-headings {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.lang-h-ar {
+  font-family: var(--font-ar);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--orange);
+}
+
+.lang-h-hi {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lang-modal-desc {
+  font-size: 0.92rem;
+  color: var(--text-body);
+  line-height: 1.55;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.lang-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.lang-option-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: var(--bg-subtle);
+  border: 2px solid var(--border-light);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.lang-option-card:hover {
+  background: var(--bg-card);
+  border-color: var(--orange);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 92, 27, 0.12);
+}
+
+.lang-option-card.selected {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+  box-shadow: 0 0 0 1px var(--orange);
+}
+
+.lang-option-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.lang-option-content {
+  flex: 1;
+}
+
+.lang-option-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.lang-option-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.lang-option-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 92, 27, 0.12);
+  color: var(--orange);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.lang-option-sub {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.lang-option-arrow {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--orange);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.lang-option-card:hover .lang-option-arrow {
+  transform: translateX(4px);
+}
+
+[dir="rtl"] .lang-option-card:hover .lang-option-arrow {
+  transform: translateX(-4px);
+}
+
+.lang-modal-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.btn-lang-continue {
+  background: var(--text-main);
+  color: var(--bg-page);
+  border: none;
+  border-radius: 12px;
+  padding: 13px 28px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-lang-continue:hover {
+  background: var(--orange);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.lang-modal-legal-note {
+  font-size: 0.74rem;
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+/* ==========================================================================
+   COMPREHENSIVE DARK THEME SYSTEM
+   ========================================================================== */
+:root {
+  color-scheme: light dark;
+
+  &:has(> head > meta[name="color-scheme"][content="dark"]) {
+    color-scheme: dark;
+  }
+  &:has(> head > meta[name="color-scheme"][content="light"]) {
+    color-scheme: light;
+  }
+}
+
+[data-theme="dark"],
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  --bg-page: #0b1120;
+  --bg-subtle: #0f172a;
+  --bg-subtle-2: #1e293b;
+  --bg-card: #131d31;
+  --border-light: #1e293b;
+  --border-card: #334155;
+  --text-main: #f8fafc;
+  --text-body: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --orange-soft: rgba(255, 92, 27, 0.18);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 35px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .main-header {
+  background: rgba(11, 17, 32, 0.94);
+  border-bottom-color: #1e293b;
+}
+
+[data-theme="dark"] .hero-section {
+  background: url('/sasha-night-site.png') center right / cover no-repeat !important;
+}
+
+[data-theme="dark"] .hero-backdrop {
+  background: linear-gradient(
+    95deg,
+    rgba(11, 17, 32, 0.98) 0%,
+    rgba(11, 17, 32, 0.92) 50%,
+    rgba(11, 17, 32, 0.68) 85%
+  ) !important;
+}
+
+[data-theme="dark"] .hero-carousel-section {
+  background: linear-gradient(180deg, #0b1120 0%, #0f172a 100%) !important;
+  border-top-color: #1e293b;
+  border-bottom-color: #1e293b;
+}
+
+[data-theme="dark"] .hero-legal-callout,
+[data-theme="dark"] .legal-callout,
+[data-theme="dark"] .legal-banner {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .about-section,
+[data-theme="dark"] .capabilities-section,
+[data-theme="dark"] .leadership-section,
+[data-theme="dark"] .employer-section,
+[data-theme="dark"] .opportunities-section,
+[data-theme="dark"] .direct-inquiry-box,
+[data-theme="dark"] .requirements-panel {
+  background-color: var(--bg-page) !important;
+}
+
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .stat-card-new,
+[data-theme="dark"] .capability-card,
+[data-theme="dark"] .capability-card-pro,
+[data-theme="dark"] .exec-card,
+[data-theme="dark"] .exec-card-wide,
+[data-theme="dark"] .job-card-premium,
+[data-theme="dark"] .job-slide-card,
+[data-theme="dark"] .enquiry-card-admin,
+[data-theme="dark"] .record-card,
+[data-theme="dark"] .job-row,
+[data-theme="dark"] .lang-modal-card {
+  background: #131d31 !important;
+  border-color: #1e293b !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .job-specs-preview,
+[data-theme="dark"] .slide-specs-grid,
+[data-theme="dark"] .job-card-specs {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border-color: var(--orange) !important;
+  background: #131d31 !important;
+}
+
+[data-theme="dark"] .worker-apply-modal-card {
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .modal-job-title,
+[data-theme="dark"] .modal-company-title {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] .modal-loc-badge {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .btn-modal-cancel {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .btn-modal-close {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .main-footer {
+  background: #060911 !important;
+  border-top-color: #1e293b !important;
+}
+
+[data-theme="dark"] .lang-pill.active {
+  background: #1e293b !important;
+  color: var(--orange) !important;
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+

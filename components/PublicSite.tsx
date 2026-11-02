@@ -401,6 +401,8 @@ export function PublicSite({
   initialLang: Lang;
 }) {
   const [lang, setLang] = useState<Lang>(initialLang || "en");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [showLangModal, setShowLangModal] = useState(false);
   const [jobs, setJobs] = useState<Job[]>(initialJobs || []);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -441,6 +443,54 @@ export function PublicSite({
   const isRtl = lang === "ar";
   const displayPhone = envPhone || "+971 56 237 1853";
 
+  // Check saved theme and prompt initial language selection modal
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem("sasha_theme") as "light" | "dark" | null;
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+      setTheme(initialTheme);
+      document.documentElement.setAttribute("data-theme", initialTheme);
+
+      const langChosen = localStorage.getItem("sasha_lang_chosen");
+      const savedLang = localStorage.getItem("sasha_lang") as Lang | null;
+      if (!langChosen) {
+        setShowLangModal(true);
+      } else if (savedLang && (savedLang === "en" || savedLang === "ar" || savedLang === "hi")) {
+        setLang(savedLang);
+        document.documentElement.lang = savedLang === "hi" ? "en" : savedLang;
+        document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+      }
+    } catch {}
+  }, []);
+
+  function toggleTheme() {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    try {
+      localStorage.setItem("sasha_theme", nextTheme);
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta) meta.setAttribute("content", nextTheme);
+    } catch {}
+  }
+
+  function selectInitialLang(selected: Lang) {
+    handleLanguageChange(selected);
+    try {
+      localStorage.setItem("sasha_lang_chosen", "true");
+      localStorage.setItem("sasha_lang", selected);
+    } catch {}
+    setShowLangModal(false);
+  }
+
+  function closeLangModal() {
+    try {
+      localStorage.setItem("sasha_lang_chosen", "true");
+    } catch {}
+    setShowLangModal(false);
+  }
+
   // Live polling for jobs every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -465,6 +515,11 @@ export function PublicSite({
 
   function handleLanguageChange(newLang: Lang) {
     setLang(newLang);
+    document.documentElement.lang = newLang === "hi" ? "en" : newLang;
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    try {
+      localStorage.setItem("sasha_lang", newLang);
+    } catch {}
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("lang", newLang);
@@ -729,6 +784,27 @@ export function PublicSite({
                 Hinglish
               </button>
             </div>
+
+            {/* Dark Mode Toggle */}
+            <button
+              type="button"
+              className="theme-toggle-btn"
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {theme === "dark" ? (
+                <>
+                  <span className="theme-toggle-icon">☀️</span>
+                  <span className="theme-toggle-label">Light</span>
+                </>
+              ) : (
+                <>
+                  <span className="theme-toggle-icon">🌙</span>
+                  <span className="theme-toggle-label">Dark</span>
+                </>
+              )}
+            </button>
 
             <a href="#employer-requirement" className="btn-cta-nav">
               {t.btnEmployer}
@@ -1801,6 +1877,124 @@ export function PublicSite({
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* First-visit Language Welcome Dialog */}
+      {showLangModal && (
+        <div
+          className="lang-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="lang-modal-heading"
+          onClick={closeLangModal}
+        >
+          <div
+            className="lang-modal-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="lang-modal-close"
+              onClick={closeLangModal}
+              aria-label="Close language selector"
+            >
+              ✕
+            </button>
+
+            <div className="lang-modal-header">
+              <div className="lang-modal-badge">
+                <span className="lang-uae-flag">🇦🇪</span>
+                <span>ABU DHABI • UAE LICENSED GENERAL CONTRACTING</span>
+              </div>
+              <img
+                src="/sasha-mark.svg"
+                alt="SASHA General Contracting"
+                width="48"
+                height="48"
+                className="lang-modal-logo"
+              />
+              <h2 id="lang-modal-heading" className="lang-modal-title">
+                Welcome to SASHA General Contracting
+              </h2>
+              <div className="lang-modal-multi-headings">
+                <span className="lang-h-ar">مرحباً بكم في ساشا للمقاولات العامة</span>
+                <span className="lang-h-hi">साशा जनरल कॉन्ट्रैक्टिंग में आपका स्वागत है</span>
+              </div>
+              <p className="lang-modal-desc">
+                Please select your preferred language to view UAE project services, open site recruitment, and operations contact.
+              </p>
+            </div>
+
+            <div className="lang-modal-options">
+              <button
+                type="button"
+                className={`lang-option-card ${lang === "en" ? "selected" : ""}`}
+                onClick={() => selectInitialLang("en")}
+              >
+                <div className="lang-option-icon">🌐</div>
+                <div className="lang-option-content">
+                  <div className="lang-option-top">
+                    <span className="lang-option-name">English</span>
+                    <span className="lang-option-pill">Primary</span>
+                  </div>
+                  <p className="lang-option-sub">
+                    UAE Commercial Building Contracting, Engineering & Operations
+                  </p>
+                </div>
+                <span className="lang-option-arrow">→</span>
+              </button>
+
+              <button
+                type="button"
+                className={`lang-option-card ${lang === "ar" ? "selected" : ""}`}
+                onClick={() => selectInitialLang("ar")}
+              >
+                <div className="lang-option-icon">🇦🇪</div>
+                <div className="lang-option-content" dir="rtl">
+                  <div className="lang-option-top">
+                    <span className="lang-option-name">العربية (Arabic)</span>
+                    <span className="lang-option-pill">الرسمية</span>
+                  </div>
+                  <p className="lang-option-sub">
+                    مقاولات مشاريع المباني في أبوظبي، متطلبات الشركات والتوظيف
+                  </p>
+                </div>
+                <span className="lang-option-arrow">←</span>
+              </button>
+
+              <button
+                type="button"
+                className={`lang-option-card ${lang === "hi" ? "selected" : ""}`}
+                onClick={() => selectInitialLang("hi")}
+              >
+                <div className="lang-option-icon">👷</div>
+                <div className="lang-option-content">
+                  <div className="lang-option-top">
+                    <span className="lang-option-name">हिंदी / Hinglish</span>
+                    <span className="lang-option-pill">Workforce</span>
+                  </div>
+                  <p className="lang-option-sub">
+                    Abu Dhabi site kaam, direct bharti, salary aur project assistance
+                  </p>
+                </div>
+                <span className="lang-option-arrow">→</span>
+              </button>
+            </div>
+
+            <div className="lang-modal-footer">
+              <button
+                type="button"
+                className="btn-lang-continue"
+                onClick={() => selectInitialLang(lang || "en")}
+              >
+                Continue in English →
+              </button>
+              <span className="lang-modal-legal-note">
+                Abu Dhabi Department of Economic Development Licensed
+              </span>
+            </div>
           </div>
         </div>
       )}
