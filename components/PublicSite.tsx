@@ -1989,7 +1989,11 @@ export function PublicSite({
                 className="btn-lang-continue"
                 onClick={() => selectInitialLang(lang || "en")}
               >
-                Continue in English →
+                {lang === "ar"
+                  ? "المتابعة باللغة العربية ←"
+                  : lang === "hi"
+                  ? "हिंदी में आगे बढ़ें →"
+                  : "Continue in English →"}
               </button>
               <span className="lang-modal-legal-note">
                 Abu Dhabi Department of Economic Development Licensed
