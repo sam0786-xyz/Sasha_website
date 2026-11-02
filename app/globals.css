@@ -45,6 +45,7 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
+  overflow-x: clip; /* hidden would stop the sticky header from sticking */
   max-width: 100vw;
 }
 
@@ -54,12 +55,14 @@ body {
   color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
   position: relative;
 }
 
 .site-wrapper {
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
   width: 100%;
 }
@@ -495,7 +498,7 @@ button, input, textarea, select {
 
 .services-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
   gap: 24px;
 }
 
@@ -1169,7 +1172,7 @@ button, input, textarea, select {
 /* Stat Cards (Ops) */
 .ops-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 20px;
 }
 
@@ -1633,7 +1636,7 @@ button, input, textarea, select {
 /* Enquiries in Ops */
 .enquiries-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 20px;
 }
 
@@ -1822,183 +1825,6 @@ button, input, textarea, select {
 /* ============================================================
    RESPONSIVE QUERIES (MOBILE, TABLET & DESKTOP PERFECTION)
    ============================================================ */
-@media (max-width: 960px) {
-  .desktop-nav {
-    display: none !important;
-  }
-  .two-col-layout,
-  .contact-grid-wrapper {
-    grid-template-columns: 1fr;
-  }
-  .spotlight-position-row {
-    grid-template-columns: 1fr !important;
-    gap: 16px;
-  }
-  .spotlight-salary-box {
-    text-align: left !important;
-    min-width: 0 !important;
-    width: 100% !important;
-  }
-  [dir="rtl"] .spotlight-salary-box {
-    text-align: right !important;
-  }
-  .spotlight-details-grid {
-    grid-template-columns: 1fr !important;
-    gap: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-container {
-    height: 64px;
-    padding: 0 14px;
-    gap: 8px;
-  }
-  .site-brand {
-    font-size: 1.15rem;
-    gap: 8px;
-  }
-  .brand-mark-img {
-    height: 32px;
-  }
-  .header-right {
-    gap: 6px;
-  }
-  .btn-cta-nav {
-    display: none !important;
-  }
-  .theme-toggle-btn {
-    padding: 5px 8px;
-  }
-  .theme-toggle-label {
-    display: none !important;
-  }
-  .lang-pill {
-    padding: 4px 7px;
-    font-size: 0.72rem;
-  }
-  .hero-section {
-    min-height: auto;
-    padding: 50px 0 40px;
-  }
-  .hero-content-container {
-    padding: 0 16px;
-  }
-  .col-stats-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .leader-photo-frame,
-  .leader-avatar-frame {
-    height: 280px;
-  }
-  .job-card-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .job-row,
-  .record-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .job-actions,
-  .rec-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-  .manual-desk-form {
-    flex-direction: column;
-  }
-  .footer-container {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0 16px;
-    gap: 20px;
-  }
-  .footer-right {
-    align-items: flex-start;
-  }
-  .straight-grid-2,
-  .straight-grid-3,
-  .form-grid-3,
-  .form-grid-2,
-  .scope-checkboxes-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .straight-requirement-card {
-    padding: 24px 16px;
-  }
-  .form-section-block {
-    padding: 18px 14px;
-  }
-}
-
-@media (max-width: 520px) {
-  .header-container {
-    padding: 0 10px;
-  }
-  .site-brand {
-    font-size: 1.05rem;
-  }
-  .brand-mark-img {
-    height: 28px;
-  }
-  .hero-title {
-    font-size: clamp(1.85rem, 8vw, 2.5rem);
-  }
-  .hero-button-row {
-    flex-direction: column;
-    width: 100%;
-    gap: 12px;
-  }
-  .hero-button-row .btn-primary-signal,
-  .hero-button-row .btn-secondary-ghost {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-  }
-  .job-spotlight-card {
-    padding: 18px 14px !important;
-  }
-  .spotlight-company-name {
-    font-size: 1.05rem;
-  }
-  .spotlight-position-title {
-    font-size: 1.5rem !important;
-  }
-  .company-logo-avatar {
-    width: 44px;
-    height: 44px;
-  }
-  .carousel-header-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-  .carousel-controls-top {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .worker-apply-modal-backdrop,
-  .lang-modal-backdrop {
-    padding: 8px;
-  }
-  .worker-apply-modal-card,
-  .lang-modal-card {
-    padding: 20px 14px !important;
-    border-radius: 16px !important;
-  }
-  .lang-option-card {
-    padding: 12px 10px !important;
-    gap: 10px !important;
-  }
-  .lang-option-icon {
-    font-size: 1.5rem !important;
-  }
-  .lang-option-name {
-    font-size: 1rem !important;
-  }
-}
 
 
 /* ==========================================================================
@@ -2720,7 +2546,7 @@ button, input, textarea, select {
 
 .contact-quick-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 16px;
   margin-bottom: 32px;
 }
@@ -4439,3 +4265,537 @@ button, input, textarea, select {
   color: #64748b !important;
 }
 
+/* Base breakpoints (moved here so they take effect over the component styles) */
+@media (max-width: 960px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .two-col-layout,
+  .contact-grid-wrapper {
+    grid-template-columns: 1fr;
+  }
+  .spotlight-position-row {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .spotlight-salary-box {
+    text-align: left !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  [dir="rtl"] .spotlight-salary-box {
+    text-align: right !important;
+  }
+  .spotlight-details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    height: 64px;
+    padding: 0 14px;
+    gap: 8px;
+  }
+  .site-brand {
+    font-size: 1.15rem;
+    gap: 8px;
+  }
+  .brand-mark-img {
+    height: 32px;
+  }
+  .header-right {
+    gap: 6px;
+  }
+  .btn-cta-nav {
+    display: none !important;
+  }
+  .theme-toggle-btn {
+    padding: 5px 8px;
+  }
+  .theme-toggle-label {
+    display: none !important;
+  }
+  .lang-pill {
+    padding: 4px 7px;
+    font-size: 0.72rem;
+  }
+  .hero-section {
+    min-height: auto;
+    padding: 50px 0 40px;
+  }
+  .hero-content-container {
+    padding: 0 16px;
+  }
+  .col-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .leader-photo-frame,
+  .leader-avatar-frame {
+    height: 280px;
+  }
+  .job-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .job-row,
+  .record-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .job-actions,
+  .rec-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .manual-desk-form {
+    flex-direction: column;
+  }
+  .footer-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 16px;
+    gap: 20px;
+  }
+  .footer-right {
+    align-items: flex-start;
+  }
+  .straight-grid-2,
+  .straight-grid-3,
+  .form-grid-3,
+  .form-grid-2,
+  .scope-checkboxes-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .straight-requirement-card {
+    padding: 24px 16px;
+  }
+  .form-section-block {
+    padding: 18px 14px;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-container {
+    padding: 0 10px;
+  }
+  .site-brand {
+    font-size: 1.05rem;
+  }
+  .brand-mark-img {
+    height: 28px;
+  }
+  .hero-title {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+  .hero-button-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  .hero-button-row .btn-primary-signal,
+  .hero-button-row .btn-secondary-ghost {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  .job-spotlight-card {
+    padding: 18px 14px !important;
+  }
+  .spotlight-company-name {
+    font-size: 1.05rem;
+  }
+  .spotlight-position-title {
+    font-size: 1.5rem !important;
+  }
+  .company-logo-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .carousel-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .carousel-controls-top {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .worker-apply-modal-backdrop,
+  .lang-modal-backdrop {
+    padding: 8px;
+  }
+  .worker-apply-modal-card,
+  .lang-modal-card {
+    padding: 20px 14px !important;
+    border-radius: 16px !important;
+  }
+  .lang-option-card {
+    padding: 12px 10px !important;
+    gap: 10px !important;
+  }
+  .lang-option-icon {
+    font-size: 1.5rem !important;
+  }
+  .lang-option-name {
+    font-size: 1rem !important;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYER — keep at the END of this file.
+   Same-specificity rules later in the file override earlier ones, so media
+   queries placed above the component styles silently stop working.
+   ========================================================================== */
+
+html {
+  scroll-padding-top: 92px;
+}
+
+/* --- Header: never let controls run off the screen --- */
+.header-container {
+  max-width: 1800px;
+}
+
+.desktop-nav {
+  gap: clamp(14px, 1.6vw, 32px);
+}
+
+.desktop-nav a {
+  white-space: nowrap;
+}
+
+.nav-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  background: var(--bg-subtle-2);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.site-menu-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 64px);
+  max-height: calc(100dvh - 64px);
+  overflow-y: auto;
+  padding: 8px 16px 16px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
+}
+
+.site-menu-panel > a:not(.site-menu-cta) {
+  display: block;
+  padding: 13px 4px;
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.site-menu-theme {
+  display: none;
+  padding: 13px 4px;
+  font-weight: 700;
+  text-align: start;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.site-menu-cta {
+  display: block;
+  margin-top: 14px;
+  padding: 13px 16px;
+  text-align: center;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--orange);
+  border-radius: var(--radius-sm);
+}
+
+@media (min-width: 1381px) {
+  .site-menu-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 1719px) {
+  .btn-cta-nav {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1449px) {
+  .theme-toggle-label {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1380px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .nav-menu-btn {
+    display: inline-flex;
+  }
+}
+
+/* --- Sections, forms and touch targets on tablets and phones --- */
+@media (max-width: 960px) {
+  .quick-channel-item a {
+    display: inline-block;
+    padding: 6px 0;
+  }
+  .btn-ask-job {
+    min-height: 44px;
+  }
+  .carousel-dot {
+    position: relative;
+  }
+  .carousel-dot::after {
+    content: "";
+    position: absolute;
+    inset: -16px -5px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 76px;
+  }
+  .lang-pill {
+    min-height: 36px;
+  }
+  .theme-toggle-btn {
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+  }
+  /* 16px stops iOS Safari zooming the page when a field is focused */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  .form-field input,
+  .form-field select {
+    min-height: 46px;
+  }
+  .section-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .straight-requirement-card {
+    padding: 20px 14px;
+  }
+  .form-section-block {
+    padding: 16px 12px;
+  }
+  .hero-backdrop,
+  [dir="rtl"] .hero-backdrop {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.86));
+  }
+  [data-theme="dark"] .hero-backdrop {
+    background: linear-gradient(180deg, rgba(11, 17, 32, 0.95), rgba(11, 17, 32, 0.84)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-mode-tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mode-tab-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+  }
+  .job-card-top-row {
+    flex-wrap: wrap;
+  }
+  .company-badge-left {
+    flex: 1 1 100%;
+  }
+  .job-card-pills {
+    flex-wrap: wrap;
+  }
+}
+
+/* Theme toggle moves into the menu so the language switcher always fits */
+@media (max-width: 480px) {
+  .header-right .theme-toggle-btn {
+    display: none;
+  }
+  .site-menu-theme {
+    display: block;
+  }
+}
+
+@media (max-width: 340px) {
+  .brand-text {
+    display: none;
+  }
+}
+
+/* --- Consistent dropdowns across Safari, Chrome and Firefox --- */
+.form-field select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-inline-end: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+[dir="rtl"] .form-field select {
+  background-position: left 14px center;
+}
+
+[data-theme="dark"] .form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+}
+
+[dir="rtl"][data-theme="dark"] .form-field select,
+[data-theme="dark"] [dir="rtl"] .form-field select {
+  background-position: left 14px center !important;
+}
+
+.checkbox-custom-label input[type="checkbox"] {
+  flex-shrink: 0;
+}
+
+/* --- Pop-ups: use the visible height, including mobile browser toolbars --- */
+.worker-apply-modal-card {
+  max-height: 92vh;
+  max-height: 92dvh;
+}
+
+.lang-modal-card {
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+}
+
+.lang-modal-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: var(--bg-card);
+}
+
+.lang-modal-title {
+  padding-inline: 28px;
+}
+
+/* Keep the job pop-up's company name clear of the close button */
+.modal-company-lockup {
+  padding-inline-end: 44px;
+}
+
+/* Language pop-up must fit without scrolling on laptops and phones */
+@media (max-height: 880px), (max-width: 640px) {
+  .lang-modal-badge,
+  .lang-modal-legal-note {
+    display: none;
+  }
+  .lang-modal-header {
+    margin-bottom: 14px;
+  }
+  .lang-modal-logo {
+    max-height: 72px;
+    width: auto;
+    margin-bottom: 8px;
+  }
+  .lang-modal-options {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .lang-option-card {
+    padding: 10px 14px;
+  }
+  .lang-modal-footer {
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 640px), (max-height: 700px) {
+  .lang-modal-card {
+    padding: 16px 14px !important;
+  }
+  .lang-modal-desc,
+  .lang-option-sub {
+    display: none;
+  }
+  .lang-modal-title {
+    font-size: 1.15rem;
+  }
+  .lang-h-ar {
+    font-size: 0.95rem;
+  }
+  .lang-h-hi {
+    font-size: 0.85rem;
+  }
+  .lang-option-card {
+    min-height: 52px;
+    padding: 8px 12px !important;
+  }
+  .lang-option-icon {
+    font-size: 1.35rem !important;
+  }
+}
+
+/* --- Phones held sideways --- */
+@media (max-height: 500px) {
+  html {
+    scroll-padding-top: 64px;
+  }
+  .header-container {
+    height: 56px;
+  }
+  .hero-section {
+    min-height: auto;
+    padding: 36px 0;
+  }
+  .lang-modal-card {
+    max-width: 780px;
+  }
+  .lang-modal-logo,
+  .lang-modal-multi-headings {
+    display: none;
+  }
+  .lang-modal-options {
+    flex-direction: row;
+  }
+  .lang-option-card {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 8px !important;
+  }
+  .lang-option-top {
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 0;
+  }
+  .lang-option-pill,
+  .lang-option-arrow {
+    display: none;
+  }
+}

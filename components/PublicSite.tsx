@@ -403,6 +403,7 @@ export function PublicSite({
   const [lang, setLang] = useState<Lang>(initialLang || "en");
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [showLangModal, setShowLangModal] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [jobs, setJobs] = useState<Job[]>(initialJobs || []);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -809,8 +810,35 @@ export function PublicSite({
             <a href="#employer-requirement" className="btn-cta-nav">
               {t.btnEmployer}
             </a>
+
+            <button
+              type="button"
+              className="nav-menu-btn"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-controls="site-menu-panel"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+            >
+              <span aria-hidden="true">{menuOpen ? "✕" : "☰"}</span>
+            </button>
           </div>
         </div>
+
+        {menuOpen && (
+          <nav id="site-menu-panel" className="site-menu-panel" onClick={() => setMenuOpen(false)}>
+            <a href="#top-carousel">{t.nav.carousel}</a>
+            <a href="#about">{t.nav.about}</a>
+            <a href="#services">{t.nav.services}</a>
+            <a href="#opportunities">{t.nav.opportunities}</a>
+            <a href="#leadership">{t.nav.leadership}</a>
+            <button type="button" className="site-menu-theme" onClick={toggleTheme}>
+              {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+            </button>
+            <a href="#employer-requirement" className="site-menu-cta">
+              {t.btnEmployer}
+            </a>
+          </nav>
+        )}
       </header>
 
       {/* Hero Section */}
