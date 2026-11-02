@@ -34,7 +34,7 @@ export default async function OpsPage() {
       {/* Top Navbar */}
       <header className="ops-top-nav">
         <div className="ops-brand">
-          <img src="/sasha-mark.svg" alt="SASHA GC" width="40" height="40" className="ops-nav-logo" />
+          <img src="/sasha-mark.png" alt="SASHA GC" width="34" height="42" className="ops-nav-logo" />
           <div className="ops-brand-info">
             <span className="brand-title">SASHA <span>GC</span></span>
             <span className="ops-badge">OPERATIONS DESK</span>

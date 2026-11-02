@@ -12,7 +12,7 @@ function LoginForm() {
   return (
     <div className="login-card">
       <div className="login-logo-header">
-        <img src="/sasha-mark.svg" alt="SASHA GC Logo" width="56" height="56" className="login-brand-icon" />
+        <img src="/sasha-mark.png" alt="SASHA GC Logo" width="48" height="60" className="login-brand-icon" />
         <div className="login-logo-text">
           SASHA <span>GC</span>
         </div>

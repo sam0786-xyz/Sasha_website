@@ -44,6 +44,8 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -52,6 +54,14 @@ body {
   color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
+}
+
+.site-wrapper {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
 /* RTL Support */
@@ -87,20 +97,41 @@ button, input, textarea, select {
 .header-container {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 clamp(20px, 4vw, 40px);
+  padding: 0 clamp(16px, 3.5vw, 40px);
   height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: 20px;
 }
 
 .site-brand {
-  font-size: 1.55rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.45rem;
   font-weight: 900;
   letter-spacing: -0.03em;
   color: var(--text-main);
   white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.brand-mark-img {
+  width: auto;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.footer-mark-img {
+  width: auto;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
 }
 
 .site-brand .brand-accent {
@@ -233,21 +264,24 @@ button, input, textarea, select {
 }
 
 .hero-title {
-  font-size: clamp(3rem, 7vw, 6.2rem);
-  line-height: 0.94;
+  font-size: clamp(2.1rem, 5.8vw, 6.2rem);
+  line-height: 0.96;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   color: var(--text-main);
   margin-bottom: 18px;
   max-width: 950px;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .hero-company-name {
   color: var(--orange);
-  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
   font-weight: 800;
   margin-bottom: 18px;
   letter-spacing: -0.01em;
+  word-break: break-word;
 }
 
 .hero-description {
@@ -543,7 +577,7 @@ button, input, textarea, select {
 
 .jobs-display-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 24px;
 }
 
@@ -753,7 +787,7 @@ button, input, textarea, select {
 
 .leaders-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 32px;
 }
 
@@ -1786,31 +1820,73 @@ button, input, textarea, select {
 }
 
 /* ============================================================
-   RESPONSIVE QUERIES
+   RESPONSIVE QUERIES (MOBILE, TABLET & DESKTOP PERFECTION)
    ============================================================ */
 @media (max-width: 960px) {
   .desktop-nav {
-    display: none;
+    display: none !important;
   }
   .two-col-layout,
   .contact-grid-wrapper {
     grid-template-columns: 1fr;
   }
+  .spotlight-position-row {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .spotlight-salary-box {
+    text-align: left !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  [dir="rtl"] .spotlight-salary-box {
+    text-align: right !important;
+  }
+  .spotlight-details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .header-container {
-    height: 70px;
+    height: 64px;
+    padding: 0 14px;
+    gap: 8px;
+  }
+  .site-brand {
+    font-size: 1.15rem;
+    gap: 8px;
+  }
+  .brand-mark-img {
+    height: 32px;
+  }
+  .header-right {
+    gap: 6px;
   }
   .btn-cta-nav {
-    display: none;
+    display: none !important;
+  }
+  .theme-toggle-btn {
+    padding: 5px 8px;
+  }
+  .theme-toggle-label {
+    display: none !important;
+  }
+  .lang-pill {
+    padding: 4px 7px;
+    font-size: 0.72rem;
   }
   .hero-section {
-    min-height: 80vh;
-    padding: 60px 0 50px;
+    min-height: auto;
+    padding: 50px 0 40px;
+  }
+  .hero-content-container {
+    padding: 0 16px;
   }
   .col-stats-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
   .leader-photo-frame,
   .leader-avatar-frame {
@@ -1836,9 +1912,91 @@ button, input, textarea, select {
   .footer-container {
     flex-direction: column;
     align-items: flex-start;
+    padding: 0 16px;
+    gap: 20px;
   }
   .footer-right {
     align-items: flex-start;
+  }
+  .straight-grid-2,
+  .straight-grid-3,
+  .form-grid-3,
+  .form-grid-2,
+  .scope-checkboxes-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .straight-requirement-card {
+    padding: 24px 16px;
+  }
+  .form-section-block {
+    padding: 18px 14px;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-container {
+    padding: 0 10px;
+  }
+  .site-brand {
+    font-size: 1.05rem;
+  }
+  .brand-mark-img {
+    height: 28px;
+  }
+  .hero-title {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+  .hero-button-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  .hero-button-row .btn-primary-signal,
+  .hero-button-row .btn-secondary-ghost {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  .job-spotlight-card {
+    padding: 18px 14px !important;
+  }
+  .spotlight-company-name {
+    font-size: 1.05rem;
+  }
+  .spotlight-position-title {
+    font-size: 1.5rem !important;
+  }
+  .company-logo-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .carousel-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .carousel-controls-top {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .worker-apply-modal-backdrop,
+  .lang-modal-backdrop {
+    padding: 8px;
+  }
+  .worker-apply-modal-card,
+  .lang-modal-card {
+    padding: 20px 14px !important;
+    border-radius: 16px !important;
+  }
+  .lang-option-card {
+    padding: 12px 10px !important;
+    gap: 10px !important;
+  }
+  .lang-option-icon {
+    font-size: 1.5rem !important;
+  }
+  .lang-option-name {
+    font-size: 1rem !important;
   }
 }
 
@@ -3492,12 +3650,11 @@ button, input, textarea, select {
 }
 
 .lang-modal-logo {
-  margin: 0 auto 12px;
-  border-radius: 10px;
-  background: #0f172a;
-  padding: 4px;
-  border: 1px solid rgba(255, 92, 27, 0.3);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  margin: 0 auto 16px;
+  display: block;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
 }
 
 .lang-modal-title {

@@ -744,7 +744,7 @@ export function PublicSite({
       <header className="main-header">
         <div className="header-container">
           <a href="#top" className="site-brand">
-            <img src="/sasha-mark.svg" alt="SASHA GC Logo" width="34" height="34" className="brand-mark-img" />
+            <img src="/sasha-mark.png" alt="SASHA GC Logo" width="34" height="42" className="brand-mark-img" />
             <span className="brand-text">
               SASHA <span className="brand-accent">GC</span>
             </span>
@@ -1909,10 +1909,10 @@ export function PublicSite({
                 <span>ABU DHABI • UAE LICENSED GENERAL CONTRACTING</span>
               </div>
               <img
-                src="/sasha-mark.svg"
+                src={theme === "dark" ? "/sasha-logo-dark.png" : "/sasha-logo.png"}
                 alt="SASHA General Contracting"
-                width="48"
-                height="48"
+                width="200"
+                height="100"
                 className="lang-modal-logo"
               />
               <h2 id="lang-modal-heading" className="lang-modal-title">
@@ -2008,7 +2008,7 @@ export function PublicSite({
         <div className="footer-container">
           <div className="footer-left">
             <div className="footer-brand-lockup">
-              <img src="/sasha-mark.svg" alt="SASHA GC" width="30" height="30" />
+              <img src="/sasha-mark.png" alt="SASHA GC" width="30" height="38" className="footer-mark-img" />
               <span className="footer-brand">
                 SASHA <span>GC</span>
               </span>
