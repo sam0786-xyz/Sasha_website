@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id String @id @default(cuid())
+  title String
+  companyName String @default("SASHA General Contracting")
+  companyLogo String?
+  location String
+  salaryText String?
+  experience String @default("1-2 Years UAE Site Experience")
+  workType String
+  description String
+  requirements String
+  status String @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enquiry {
+  id String @id @default(cuid())
+  kind String
+  name String
+  phone String
+  email String?
+  companyName String?
+  projectLocation String?
+  workersCount String?
+  tradePosition String?
+  experience String?
+  remarks String?
+  message String
+  createdAt DateTime @default(now())
+}
+
+model Record {
+  id String @id @default(cuid())
+  type String
+  title String
+  amount Int?
+  currency String @default("AED")
+  dueDate DateTime?
+  note String?
+  status String @default("DRAFT")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80" fill="none">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Icon Mark -->
+  <g transform="translate(10, 10)">
+    <rect width="60" height="60" rx="14" fill="#0f172a" stroke="#d97706" stroke-width="1.5" />
+    <path d="M30 14 L48 48 L39 48 L30 31 L21 48 L12 48 Z" fill="url(#logoGrad)" />
+    <rect x="17" y="38" width="26" height="3.5" rx="1.75" fill="#ffffff" />
+    <circle cx="30" cy="22" r="2.5" fill="#ffffff" />
+  </g>
+
+  <!-- Typography -->
+  <text x="86" y="44" fill="#0f172a" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="28" letter-spacing="1">SASHA</text>
+  <rect x="198" y="24" width="46" height="24" rx="6" fill="#d97706" />
+  <text x="221" y="41" text-anchor="middle" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="14" letter-spacing="1.5">GC</text>
+
+  <!-- Subtitle -->
+  <text x="88" y="60" fill="#64748b" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="10" letter-spacing="2.5">GENERAL CONTRACTING • ABU DHABI</text>
+</svg>
+

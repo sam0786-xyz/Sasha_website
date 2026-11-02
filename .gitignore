@@ -1,0 +1,12 @@
+node_modules
+.next
+.env
+prisma/*.db
+prisma/*.db-journal
+sasha.db
+sasha.db-wal
+sasha.db-shm
+.taste-skill
+work/
+work
+
