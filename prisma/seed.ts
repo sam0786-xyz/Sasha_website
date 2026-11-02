@@ -1,7 +1,9 @@
 import { db } from "../lib/db";
+
 async function main() {
-  if (db.job.findMany().length) return;
-  db.job.create({
+  const existing = await db.job.findMany();
+  if (existing.length) return;
+  await db.job.create({
     data: {
       title: "Construction helper",
       companyName: "SASHA General Contracting",
@@ -15,7 +17,7 @@ async function main() {
       status: "OPEN",
     },
   });
-  db.job.create({
+  await db.job.create({
     data: {
       title: "Mason",
       companyName: "SASHA General Contracting",
@@ -30,4 +32,6 @@ async function main() {
     },
   });
 }
-main();
+
+main().catch(console.error);
+

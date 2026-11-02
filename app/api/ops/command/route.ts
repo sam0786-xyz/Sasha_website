@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // If it's a job notice
     if (task.kind === "job") {
-      const created = db.job.create({
+      const created = await db.job.create({
         data: {
           title: task.title || "Site Work Opportunity",
           companyName: "SASHA General Contracting",
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
 
     // For all records: Employment Offers, Visa Commitments, Contracts, Invoices, Bills, Expenses
     const amountInCents = task.amount !== null ? Math.round(task.amount * 100) : null;
-    const created = db.record.create({
+    const created = await db.record.create({
       data: {
         type: task.recordType,
         title: task.title || `${task.recordType} Draft`,

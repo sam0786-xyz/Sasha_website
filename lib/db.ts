@@ -1,6 +1,4 @@
-import Database from "better-sqlite3";
-import path from "path";
-import crypto from "crypto";
+import { PrismaClient } from "@prisma/client";
 
 export type Job = {
   id: string;
@@ -14,8 +12,8 @@ export type Job = {
   description: string;
   requirements: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 };
 
 export type Enquiry = {
@@ -31,7 +29,7 @@ export type Enquiry = {
   experience?: string | null;
   remarks?: string | null;
   message: string;
-  createdAt: string;
+  createdAt: string | Date;
 };
 
 export type RecordItem = {
@@ -40,83 +38,12 @@ export type RecordItem = {
   title: string;
   amount: number | null;
   currency: string;
-  dueDate: string | null;
+  dueDate: string | Date | null;
   note: string | null;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 };
-
-const globalDb = globalThis as unknown as { sashaDb?: Database.Database };
-const dbFile = process.env.DATABASE_URL?.replace("file:", "") || "./sasha.db";
-const sqlite = globalDb.sashaDb ?? new Database(path.resolve(process.cwd(), dbFile));
-if (process.env.NODE_ENV !== "production") globalDb.sashaDb = sqlite;
-
-sqlite.pragma("journal_mode = WAL");
-sqlite.exec(`
-  CREATE TABLE IF NOT EXISTS jobs (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    companyName TEXT NOT NULL DEFAULT 'SASHA General Contracting',
-    companyLogo TEXT,
-    location TEXT NOT NULL,
-    salaryText TEXT,
-    experience TEXT NOT NULL DEFAULT '1-2 Years UAE Site Experience',
-    workType TEXT NOT NULL,
-    description TEXT NOT NULL,
-    requirements TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'OPEN',
-    createdAt TEXT NOT NULL,
-    updatedAt TEXT NOT NULL
-  );
-  CREATE TABLE IF NOT EXISTS enquiries (
-    id TEXT PRIMARY KEY,
-    kind TEXT NOT NULL,
-    name TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    email TEXT,
-    companyName TEXT,
-    projectLocation TEXT,
-    workersCount TEXT,
-    tradePosition TEXT,
-    experience TEXT,
-    remarks TEXT,
-    message TEXT NOT NULL,
-    createdAt TEXT NOT NULL
-  );
-  CREATE TABLE IF NOT EXISTS records (
-    id TEXT PRIMARY KEY,
-    type TEXT NOT NULL,
-    title TEXT NOT NULL,
-    amount INTEGER,
-    currency TEXT NOT NULL,
-    dueDate TEXT,
-    note TEXT,
-    status TEXT NOT NULL,
-    createdAt TEXT NOT NULL,
-    updatedAt TEXT NOT NULL
-  );
-`);
-
-// Safe column migrations for existing SQLite tables
-function safeAddCol(table: string, colDef: string) {
-  try {
-    sqlite.exec(`ALTER TABLE ${table} ADD COLUMN ${colDef}`);
-  } catch {}
-}
-
-safeAddCol("jobs", "companyName TEXT NOT NULL DEFAULT 'SASHA General Contracting'");
-safeAddCol("jobs", "companyLogo TEXT");
-safeAddCol("jobs", "experience TEXT NOT NULL DEFAULT '1-2 Years UAE Site Experience'");
-safeAddCol("enquiries", "companyName TEXT");
-safeAddCol("enquiries", "projectLocation TEXT");
-safeAddCol("enquiries", "workersCount TEXT");
-safeAddCol("enquiries", "tradePosition TEXT");
-safeAddCol("enquiries", "experience TEXT");
-safeAddCol("enquiries", "remarks TEXT");
-
-const id = () => crypto.randomUUID();
-const now = () => new Date().toISOString();
 
 export type CreateJobData = {
   title: string;
@@ -131,136 +58,164 @@ export type CreateJobData = {
   status?: string;
 };
 
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+  });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
 export const db = {
   job: {
-    findMany: ({ where }: { where?: { status?: string }; orderBy?: unknown } = {}) =>
-      sqlite
-        .prepare(
-          `SELECT * FROM jobs ${where?.status ? "WHERE status=?" : ""} ORDER BY updatedAt DESC`
-        )
-        .all(...(where?.status ? [where.status] : [])) as Job[],
-    create: ({ data }: { data: CreateJobData }) => {
-      const time = now();
-      const row = {
-        id: id(),
-        title: data.title,
-        companyName: data.companyName || "SASHA General Contracting",
-        companyLogo: data.companyLogo || "/sasha-mark.svg",
-        location: data.location,
-        salaryText: data.salaryText || null,
-        experience: data.experience || "1-2 Years UAE Site Experience",
-        workType: data.workType,
-        description: data.description,
-        requirements: data.requirements,
-        status: data.status || "OPEN",
-        createdAt: time,
-        updatedAt: time,
-      };
-      sqlite
-        .prepare(
-          `INSERT INTO jobs (id, title, companyName, companyLogo, location, salaryText, experience, workType, description, requirements, status, createdAt, updatedAt)
-           VALUES (@id, @title, @companyName, @companyLogo, @location, @salaryText, @experience, @workType, @description, @requirements, @status, @createdAt, @updatedAt)`
-        )
-        .run(row);
-      return row as Job;
+    findMany: async ({
+      where,
+      orderBy,
+    }: {
+      where?: { status?: string };
+      orderBy?: unknown;
+    } = {}) => {
+      return (await prisma.job.findMany({
+        where: where?.status ? { status: where.status } : undefined,
+        orderBy: (orderBy as any) ?? { updatedAt: "desc" },
+      })) as unknown as Job[];
     },
-    update: ({ where, data }: { where: { id: string }; data: Partial<Job> }) =>
-      sqlite
-        .prepare(
-          `UPDATE jobs SET 
-            status=COALESCE(@status, status),
-            title=COALESCE(@title, title),
-            companyName=COALESCE(@companyName, companyName),
-            companyLogo=COALESCE(@companyLogo, companyLogo),
-            location=COALESCE(@location, location),
-            salaryText=COALESCE(@salaryText, salaryText),
-            experience=COALESCE(@experience, experience),
-            workType=COALESCE(@workType, workType),
-            description=COALESCE(@description, description),
-            requirements=COALESCE(@requirements, requirements),
-            updatedAt=@updatedAt 
-          WHERE id=@id`
-        )
-        .run({
-          id: where.id,
-          status: data.status || null,
-          title: data.title || null,
-          companyName: data.companyName || null,
-          companyLogo: data.companyLogo || null,
-          location: data.location || null,
+    create: async ({ data }: { data: CreateJobData }) => {
+      return (await prisma.job.create({
+        data: {
+          title: data.title,
+          companyName: data.companyName || "SASHA General Contracting",
+          companyLogo: data.companyLogo || "/sasha-mark.svg",
+          location: data.location,
           salaryText: data.salaryText || null,
-          experience: data.experience || null,
-          workType: data.workType || null,
-          description: data.description || null,
-          requirements: data.requirements || null,
-          updatedAt: now(),
-        }),
-    delete: ({ where }: { where: { id: string } }) =>
-      sqlite.prepare("DELETE FROM jobs WHERE id=?").run(where.id),
-  },
-  enquiry: {
-    findMany: ({ take }: { take?: number; orderBy?: unknown } = {}) =>
-      sqlite
-        .prepare(`SELECT * FROM enquiries ORDER BY createdAt DESC ${take ? "LIMIT ?" : ""}`)
-        .all(...(take ? [take] : [])) as Enquiry[],
-    create: ({ data }: { data: Omit<Enquiry, "id" | "createdAt"> }) => {
-      const row = {
-        id: id(),
-        kind: data.kind,
-        name: data.name,
-        phone: data.phone,
-        email: data.email || null,
-        companyName: data.companyName || null,
-        projectLocation: data.projectLocation || null,
-        workersCount: data.workersCount || null,
-        tradePosition: data.tradePosition || null,
-        experience: data.experience || null,
-        remarks: data.remarks || null,
-        message: data.message,
-        createdAt: now(),
-      };
-      sqlite
-        .prepare(
-          `INSERT INTO enquiries (id, kind, name, phone, email, companyName, projectLocation, workersCount, tradePosition, experience, remarks, message, createdAt)
-           VALUES (@id, @kind, @name, @phone, @email, @companyName, @projectLocation, @workersCount, @tradePosition, @experience, @remarks, @message, @createdAt)`
-        )
-        .run(row);
-      return row;
+          experience: data.experience || "1-2 Years UAE Site Experience",
+          workType: data.workType,
+          description: data.description,
+          requirements: data.requirements,
+          status: data.status || "OPEN",
+        },
+      })) as unknown as Job;
     },
-    delete: ({ where }: { where: { id: string } }) =>
-      sqlite.prepare("DELETE FROM enquiries WHERE id=?").run(where.id),
-  },
-  record: {
-    findMany: ({ take }: { take?: number; orderBy?: unknown } = {}) =>
-      sqlite
-        .prepare(`SELECT * FROM records ORDER BY updatedAt DESC ${take ? "LIMIT ?" : ""}`)
-        .all(...(take ? [take] : [])) as RecordItem[],
-    create: ({
+    update: async ({
+      where,
       data,
     }: {
-      data: Omit<RecordItem, "id" | "createdAt" | "updatedAt" | "dueDate">;
+      where: { id: string };
+      data: Partial<Job>;
     }) => {
-      const time = now();
-      const row = { ...data, id: id(), dueDate: null, createdAt: time, updatedAt: time };
-      sqlite
-        .prepare(
-          "INSERT INTO records VALUES (@id,@type,@title,@amount,@currency,@dueDate,@note,@status,@createdAt,@updatedAt)"
-        )
-        .run(row);
-      return row;
+      return (await prisma.job.update({
+        where: { id: where.id },
+        data: {
+          ...(data.status !== undefined && { status: data.status }),
+          ...(data.title !== undefined && { title: data.title }),
+          ...(data.companyName !== undefined && { companyName: data.companyName }),
+          ...(data.companyLogo !== undefined && { companyLogo: data.companyLogo }),
+          ...(data.location !== undefined && { location: data.location }),
+          ...(data.salaryText !== undefined && { salaryText: data.salaryText }),
+          ...(data.experience !== undefined && { experience: data.experience }),
+          ...(data.workType !== undefined && { workType: data.workType }),
+          ...(data.description !== undefined && { description: data.description }),
+          ...(data.requirements !== undefined && { requirements: data.requirements }),
+        },
+      })) as unknown as Job;
     },
-    update: ({ where, data }: { where: { id: string }; data: Partial<RecordItem> }) =>
-      sqlite
-        .prepare(
-          "UPDATE records SET status=COALESCE(@status,status),note=COALESCE(@note,note),updatedAt=@updatedAt WHERE id=@id"
-        )
-        .run({
-          id: where.id,
-          status: data.status || null,
-          note: data.note || null,
-          updatedAt: now(),
-        }),
-    delete: ({ where }: { where: { id: string } }) =>
-      sqlite.prepare("DELETE FROM records WHERE id=?").run(where.id),
+    delete: async ({ where }: { where: { id: string } }) => {
+      return await prisma.job.delete({ where: { id: where.id } });
+    },
+  },
+  enquiry: {
+    findMany: async ({
+      take,
+      orderBy,
+    }: {
+      take?: number;
+      orderBy?: unknown;
+    } = {}) => {
+      return (await prisma.enquiry.findMany({
+        take,
+        orderBy: (orderBy as any) ?? { createdAt: "desc" },
+      })) as unknown as Enquiry[];
+    },
+    create: async ({
+      data,
+    }: {
+      data: Omit<Enquiry, "id" | "createdAt">;
+    }) => {
+      return (await prisma.enquiry.create({
+        data: {
+          kind: data.kind,
+          name: data.name,
+          phone: data.phone,
+          email: data.email || null,
+          companyName: data.companyName || null,
+          projectLocation: data.projectLocation || null,
+          workersCount: data.workersCount || null,
+          tradePosition: data.tradePosition || null,
+          experience: data.experience || null,
+          remarks: data.remarks || null,
+          message: data.message,
+        },
+      })) as unknown as Enquiry;
+    },
+    delete: async ({ where }: { where: { id: string } }) => {
+      return await prisma.enquiry.delete({ where: { id: where.id } });
+    },
+  },
+  record: {
+    findMany: async ({
+      take,
+      orderBy,
+    }: {
+      take?: number;
+      orderBy?: unknown;
+    } = {}) => {
+      return (await prisma.record.findMany({
+        take,
+        orderBy: (orderBy as any) ?? { updatedAt: "desc" },
+      })) as unknown as RecordItem[];
+    },
+    create: async ({
+      data,
+    }: {
+      data: Omit<RecordItem, "id" | "createdAt" | "updatedAt" | "dueDate"> & {
+        dueDate?: Date | null;
+      };
+    }) => {
+      return (await prisma.record.create({
+        data: {
+          type: data.type,
+          title: data.title,
+          amount: data.amount ?? null,
+          currency: data.currency || "AED",
+          dueDate: data.dueDate ?? null,
+          note: data.note ?? null,
+          status: data.status || "DRAFT",
+        },
+      })) as unknown as RecordItem;
+    },
+    update: async ({
+      where,
+      data,
+    }: {
+      where: { id: string };
+      data: Partial<RecordItem>;
+    }) => {
+      return (await prisma.record.update({
+        where: { id: where.id },
+        data: {
+          ...(data.status !== undefined && { status: data.status }),
+          ...(data.note !== undefined && { note: data.note }),
+          ...(data.title !== undefined && { title: data.title }),
+          ...(data.amount !== undefined && { amount: data.amount }),
+          ...(data.currency !== undefined && { currency: data.currency }),
+          ...(data.dueDate !== undefined && { dueDate: data.dueDate as any }),
+        },
+      })) as unknown as RecordItem;
+    },
+    delete: async ({ where }: { where: { id: string } }) => {
+      return await prisma.record.delete({ where: { id: where.id } });
+    },
   },
 };
