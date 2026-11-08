@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, DatabaseNotConfiguredError } from "@/lib/db";
 import { z } from "zod";
 
 const schema = z.object({
@@ -38,6 +38,9 @@ export async function POST(req: Request) {
 
     return Response.json({ ok: true }, { status: 201 });
   } catch (err: any) {
+    if (err instanceof DatabaseNotConfiguredError) {
+      return Response.json({ error: err.message }, { status: 503 });
+    }
     return Response.json(
       { error: err?.message || "Please check the information and try again." },
       { status: 400 }

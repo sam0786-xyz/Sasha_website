@@ -1,0 +1,87 @@
+/* Tailwind CSS v4 for Watermelon UI / shadcn components.
+   Preflight is deliberately not imported: the hand-written styles in globals.css
+   (and the operations portal's ops.css) keep their own base rules. */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "../components";
+@source "../app";
+
+/* Minimal reset for the Watermelon / shadcn buttons only (preflight is not loaded). */
+@layer base {
+  :where(button[data-slot], [role="tab"]) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+  }
+}
+
+/* The site toggles dark mode with <html data-theme="dark">. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Map shadcn / Watermelon tokens onto the SASHA brand tokens from globals.css. */
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--text);
+  --color-primary: var(--orange);
+  --color-primary-foreground: var(--ink);
+  --color-secondary: var(--bg-tint);
+  --color-secondary-foreground: var(--text);
+  --color-muted: var(--bg-tint);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--bg-tint);
+  --color-accent-foreground: var(--text);
+  --color-destructive: var(--danger);
+  --color-border: var(--line);
+  --color-input: var(--line-strong);
+  --color-ring: var(--orange);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+  --color-brand-text: var(--orange-text);
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-label);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+}
+
+/* Accordion open/close (normally supplied by tw-animate-css). */
+@theme {
+  --animate-accordion-down: accordion-down 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-accordion-up: accordion-up 0.18s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="accordion-content"] {
+    animation: none !important;
+  }
+}
