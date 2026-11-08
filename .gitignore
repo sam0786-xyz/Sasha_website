@@ -10,3 +10,4 @@ sasha.db-shm
 work/
 work
 
+.env*.local
