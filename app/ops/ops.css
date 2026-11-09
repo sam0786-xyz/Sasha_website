@@ -4799,3 +4799,110 @@ html {
     display: none;
   }
 }
+
+/* ==========================================================================
+   OPERATIONS PORTAL — READABILITY (keep at the end of this file)
+   The portal always renders in light mode (see the theme script in app/layout.tsx).
+   These overrides lift every text/background pair to WCAG AA contrast (4.5:1+).
+   ========================================================================== */
+
+/* Orange buttons keep the brand orange, with dark text instead of white (≈6:1). */
+.btn-login-submit,
+.btn-login-submit:hover,
+.btn-ops-submit,
+.btn-ops-submit:hover,
+.mic-button,
+.mic-button:hover,
+.mic-button .mic-label,
+.btn-action.open,
+.btn-desk-submit,
+.btn-desk-submit:hover,
+.ops-user-avatar {
+  color: #121214;
+}
+
+.btn-ops-logout:hover {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
+/* Recording state: white text on a darker red (≈6.5:1). */
+.mic-button.active,
+.mic-button.active .mic-label {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+/* Small orange text → darker orange (≈5:1 on white and on the light orange tint). */
+.ops-badge,
+.voice-badge,
+.enq-kind,
+.status-pill.draft,
+.enq-contacts a,
+.preset-btn:hover,
+.btn-view-site:hover {
+  color: #b4470a;
+}
+
+/* Green status text → darker green (≈5:1). */
+.status-pill.open,
+.status-pill.approved,
+.approved-indicator {
+  color: #047857;
+}
+
+/* Approve button: white text on a darker green (≈5.5:1). */
+.btn-action.approve {
+  background: #047857;
+  color: #ffffff;
+}
+
+/* Delete / remove actions → darker red (≈6.5:1). */
+.btn-action.delete {
+  color: #b91c1c;
+}
+
+/* Header on phones: brand + actions on the first row, signed-in user on the second. */
+.btn-view-site,
+.btn-ops-logout,
+.ops-brand-info,
+.ops-brand .brand-title {
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .ops-top-nav {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    padding: 12px 16px;
+  }
+  .ops-brand {
+    order: 1;
+  }
+  .ops-nav-actions {
+    order: 2;
+    margin-inline-start: auto;
+    gap: 12px;
+  }
+  .ops-user-badge {
+    order: 3;
+    flex: 1 1 100%;
+    border-radius: 12px;
+  }
+  .ops-user-meta {
+    min-width: 0;
+  }
+  .ops-user-meta small {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 380px) {
+  .btn-view-site {
+    font-size: 0.8rem;
+  }
+  .ops-nav-actions {
+    gap: 8px;
+  }
+}

@@ -36,7 +36,8 @@ export const viewport: Viewport = {
 };
 
 // Applies the saved or system theme before first paint to avoid a flash.
-const themeScript = `try{var t=localStorage.getItem('sasha_theme');document.documentElement.setAttribute('data-theme',t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch(e){}`;
+// The operations portal (/ops) has no dark theme of its own, so it always renders light.
+const themeScript = `try{var d=document.documentElement;if(location.pathname.indexOf('/ops')===0){d.setAttribute('data-theme','light');d.style.colorScheme='light'}else{var t=localStorage.getItem('sasha_theme');d.setAttribute('data-theme',t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = await getLang();
