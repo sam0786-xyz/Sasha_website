@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["radix-ui", "lucide-react", "react-icons"],
   },
   images: { formats: ["image/avif", "image/webp"] },
+  async rewrites() {
+    return [
+      {
+        source: "/bingsiteauth.xml",
+        destination: "/BingSiteAuth.xml",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

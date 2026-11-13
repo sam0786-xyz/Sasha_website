@@ -25,6 +25,11 @@ export const metadata: Metadata = {
   publisher: COMPANY.name,
   category: "construction",
   formatDetection: { telephone: true, email: true, address: false },
+  verification: {
+    other: {
+      "msvalidate.01": "8074C2887D2C2E801E5B327276CD6F88",
+    },
+  },
 };
 
 export const viewport: Viewport = {
