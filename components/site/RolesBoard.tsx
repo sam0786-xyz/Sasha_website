@@ -148,7 +148,7 @@ export function RolesBoard({ lang, initialJobs, phone }: { lang: Lang; initialJo
               </button>
             </div>
             <p className="sheet__lead">{t.apply.lead}</p>
-            <ApplyForm key={active.id} lang={lang} job={active} />
+            <ApplyForm key={active.id} lang={lang} job={active} whatsapp={phone} />
           </div>
         )}
       </dialog>

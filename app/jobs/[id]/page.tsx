@@ -45,7 +45,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     robots: open ? undefined : { index: false, follow: true },
     alternates: {
       canonical: withLang(path, lang),
-      languages: { en: path, ar: `${path}?lang=ar`, "hi-Latn": `${path}?lang=hi`, "x-default": path },
+      languages: {
+        en: path,
+        ar: `${path}?lang=ar`,
+        hi: `${path}?lang=hi`,
+        "hi-Latn": `${path}?lang=hinglish`,
+        "x-default": path,
+      },
     },
     openGraph: { type: "website", url: withLang(path, lang), siteName: COMPANY.name, title, description, images: [OG_IMAGE] },
     twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE.url] },
@@ -112,7 +118,7 @@ export default async function JobPage({ params }: Params) {
                   {t.apply.title}
                 </h2>
                 <p className="jobpage__apply-lead">{t.apply.lead}</p>
-                <ApplyForm lang={lang} job={job} />
+                <ApplyForm lang={lang} job={job} whatsapp={phone} />
                 <div className="jobpage__alt">
                   <a className="btn btn--ghost btn--sm" href={telHref(phone)}>
                     <IconPhone size={17} />

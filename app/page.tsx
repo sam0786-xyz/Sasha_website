@@ -15,11 +15,12 @@ export const dynamic = "force-dynamic";
 const HOME_ALTERNATES = [
   ["en", `${SITE_URL}/`],
   ["ar", `${SITE_URL}/?lang=ar`],
-  ["hi-Latn", `${SITE_URL}/?lang=hi`],
+  ["hi", `${SITE_URL}/?lang=hi`],
+  ["hi-Latn", `${SITE_URL}/?lang=hinglish`],
   ["x-default", `${SITE_URL}/`],
 ] as const;
 
-const OG_LOCALE = { en: "en_AE", ar: "ar_AE", hi: "hi_IN" } as const;
+const OG_LOCALE = { en: "en_AE", ar: "ar_AE", hi: "hi_IN", hinglish: "en_IN" } as const;
 
 export async function generateMetadata(): Promise<Metadata> {
   const lang = await getLang();

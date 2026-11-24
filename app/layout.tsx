@@ -1,7 +1,7 @@
 import "./tailwind.css";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Mukta } from "next/font/google";
 import { getLang } from "@/lib/lang";
 import { COPY, HTML_LANG } from "@/lib/copy";
 import { COMPANY, SITE_URL } from "@/lib/site";
@@ -12,6 +12,13 @@ const arabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-arabic",
+  display: "swap",
+});
+// Devanagari subset only: Latin text keeps Archivo, Hindi script uses Mukta.
+const devanagari = Mukta({
+  subsets: ["devanagari"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-devanagari",
   display: "swap",
 });
 
@@ -50,7 +57,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={HTML_LANG[lang]}
       dir={lang === "ar" ? "rtl" : "ltr"}
-      className={`${sans.variable} ${mono.variable} ${arabic.variable}`}
+      className={`${sans.variable} ${mono.variable} ${arabic.variable} ${devanagari.variable}`}
       suppressHydrationWarning
     >
       <head>

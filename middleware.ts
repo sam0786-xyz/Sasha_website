@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const LANGS = new Set(["en", "ar", "hi"]);
+const LANGS = new Set(["en", "ar", "hi", "hinglish"]);
 const COOKIE = "sasha_lang";
 
 // Resolves the page language from ?lang= (which wins and is remembered) or the saved

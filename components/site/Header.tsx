@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { COPY, LANGS, LANG_SHORT, HTML_LANG, type Lang } from "@/lib/copy";
+import { COPY, LANGS, LANG_NAME, LANG_SHORT, HTML_LANG, type Lang } from "@/lib/copy";
 import { Logo } from "./Logo";
-import { IconClose, IconMenu, IconMoon, IconSun } from "./Icons";
+import { IconChevronDown, IconClose, IconGlobe, IconMenu, IconMoon, IconSun } from "./Icons";
 
 type Theme = "light" | "dark";
 
@@ -22,6 +22,28 @@ export function Header({ lang, onHome }: { lang: Lang; onHome: boolean }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Compact language menu (small screens): close on outside click or Escape.
+  const langMenu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const d = langMenu.current;
+      if (d?.open && !d.contains(e.target as Node)) d.open = false;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const d = langMenu.current;
+      if (e.key === "Escape" && d?.open) {
+        d.open = false;
+        d.querySelector("summary")?.focus();
+      }
+    };
+    document.addEventListener("click", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("click", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
   }, []);
 
   useEffect(() => {
@@ -81,6 +103,27 @@ export function Header({ lang, onHome }: { lang: Lang; onHome: boolean }) {
               </a>
             ))}
           </nav>
+          <details className="langs-compact" ref={langMenu}>
+            <summary aria-label={`${t.ui.language}: ${LANG_NAME[lang]}`}>
+              <IconGlobe size={17} />
+              <span lang={HTML_LANG[lang]}>{LANG_SHORT[lang]}</span>
+              <IconChevronDown size={15} className="langs-compact__chev" />
+            </summary>
+            <ul className="langs-compact__menu">
+              {LANGS.map((l) => (
+                <li key={l}>
+                  <a
+                    href={`${pathname}?lang=${l}`}
+                    hrefLang={HTML_LANG[l]}
+                    lang={HTML_LANG[l]}
+                    aria-current={l === lang ? "true" : undefined}
+                  >
+                    {LANG_NAME[l]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
           <button type="button" className="icon-btn hdr__theme" onClick={toggleTheme} aria-label={themeLabel} title={themeLabel}>
             {theme === "dark" ? <IconSun size={18} /> : <IconMoon size={18} />}
           </button>

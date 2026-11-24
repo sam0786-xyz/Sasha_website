@@ -84,7 +84,7 @@ export const ContinuousTabs: FC<ContinuousTabsProps> = ({
                 tabIndex={isActive ? 0 : -1}
                 onClick={() => onChange(tab.id)}
                 onKeyDown={(e) => onKeyDown(e, i)}
-                className="relative min-h-[46px] rounded-md px-3 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="relative min-h-[46px] rounded-md px-3 text-center outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {isActive && (
                   <m.span

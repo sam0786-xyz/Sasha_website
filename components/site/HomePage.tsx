@@ -343,7 +343,7 @@ export function HomePage({ lang, jobs, phone }: { lang: Lang; jobs: JobLite[]; p
               </ul>
             </div>
             <div className="contact__form">
-              <RequirementForm lang={lang} />
+              <RequirementForm lang={lang} whatsapp={phone} />
             </div>
           </div>
         </section>

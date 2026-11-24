@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { COPY, OPTIONS, type Lang, type Option } from "@/lib/copy";
-import { IconCheck } from "./Icons";
+import { IconChat, IconCheck } from "./Icons";
 import { ContinuousTabs } from "@/components/watermelon/continuous-tabs";
 
 export type JobLite = {
@@ -18,12 +18,19 @@ export type JobLite = {
   createdAt: string;
 };
 
-async function postEnquiry(body: Record<string, unknown>): Promise<boolean> {
+async function postEnquiry(
+  body: Record<string, unknown>,
+  form: HTMLFormElement,
+  lang: Lang,
+): Promise<boolean> {
+  // The hidden "website" field is a spam trap: people never see it, bots fill it in.
+  const trap = form.elements.namedItem("website");
+  const website = trap instanceof HTMLInputElement ? trap.value : "";
   try {
     const res = await fetch("/api/enquiries", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...body, lang, website }),
     });
     return res.ok;
   } catch {
@@ -31,7 +38,48 @@ async function postEnquiry(body: Record<string, unknown>): Promise<boolean> {
   }
 }
 
+/* ---------- WhatsApp hand-off ---------- */
+
+/** Option label in the visitor's language (falls back to the stored English value). */
+function optionLabel(options: Option[], value: string, lang: Lang) {
+  return options.find((o) => o.value === value)?.label[lang] ?? value;
+}
+
+/** wa.me link that opens a chat with the company, with the visitor's details already typed. */
+function whatsappDraft(
+  number: string,
+  intro: string,
+  rows: [string, string | undefined | null][],
+) {
+  const lines = rows
+    .filter(([, v]) => v && v.trim())
+    // "Where are you now?" reads better as "Where are you now: …"
+    .map(
+      ([k, v]) =>
+        `${k.replace(/\s*[?؟]\s*$/, "")}: ${(v as string).trim().slice(0, 300)}`,
+    );
+  const text = [intro, "", ...lines].join("\n");
+  return `https://wa.me/${number.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+}
+
 /* ---------- Field primitives ---------- */
+
+function SpamTrap() {
+  return (
+    <div className="hp" aria-hidden="true">
+      <label>
+        Leave this field empty
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </label>
+    </div>
+  );
+}
 
 function Field({
   label,
@@ -52,7 +100,14 @@ function Field({
     <div className={`field${wide ? " field--wide" : ""}`}>
       <label htmlFor={id} className="field__label">
         {label}
-        {required ? <span className="field__req" aria-hidden="true"> *</span> : hint ? <span className="field__hint"> ({hint})</span> : null}
+        {required ? (
+          <span className="field__req" aria-hidden="true">
+            {" "}
+            *
+          </span>
+        ) : hint ? (
+          <span className="field__hint"> ({hint})</span>
+        ) : null}
       </label>
       {children}
     </div>
@@ -73,7 +128,12 @@ function Select({
   lang: Lang;
 }) {
   return (
-    <select id={id} className="input input--select" value={value} onChange={(e) => onChange(e.target.value)}>
+    <select
+      id={id}
+      className="input input--select"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    >
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label[lang]}
@@ -83,15 +143,75 @@ function Select({
   );
 }
 
-function Success({ title, text, again, onAgain }: { title: string; text: string; again: string; onAgain: () => void }) {
+function Success({
+  title,
+  text,
+  again,
+  onAgain,
+  lang,
+  waHref,
+}: {
+  title: string;
+  text: string;
+  again: string;
+  onAgain: () => void;
+  lang: Lang;
+  waHref?: string | null;
+}) {
+  const wa = COPY[lang].wa;
+  const [mobile, setMobile] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+
+  // The confirmation is much shorter than the form it replaces: bring it into view and focus it,
+  // so people on phones (and screen-reader users) actually see that it was received.
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    el.focus({ preventScroll: true });
+  }, []);
+
+  // On phones, hand over to WhatsApp automatically once the confirmation has been seen.
+  useEffect(() => {
+    if (!waHref) return;
+    const isPhone = window.matchMedia("(pointer: coarse)").matches;
+    setMobile(isPhone);
+    if (!isPhone) return;
+    const timer = window.setTimeout(() => {
+      window.location.href = waHref;
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [waHref]);
+
   return (
-    <div className="form-done" role="status">
+    <div className="form-done" role="status" ref={box} tabIndex={-1}>
       <span className="form-done__icon">
         <IconCheck size={22} />
       </span>
       <p className="form-done__title">{title}</p>
       <p className="form-done__text">{text}</p>
-      <button type="button" className="btn btn--ghost btn--sm" onClick={onAgain}>
+      {waHref && (
+        <>
+          <a
+            className="btn btn--whatsapp"
+            href={waHref}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <IconChat size={18} />
+            {wa.send}
+          </a>
+          <p className="form-done__hint">
+            {mobile ? wa.hintMobile : wa.hintDesktop}
+          </p>
+        </>
+      )}
+      <button
+        type="button"
+        className="btn btn--ghost btn--sm"
+        onClick={onAgain}
+      >
         {again}
       </button>
     </div>
@@ -100,7 +220,16 @@ function Success({ title, text, again, onAgain }: { title: string; text: string;
 
 /* ---------- Apply for a specific role ---------- */
 
-export function ApplyForm({ lang, job }: { lang: Lang; job: Pick<JobLite, "title" | "companyName" | "location" | "salaryText"> }) {
+export function ApplyForm({
+  lang,
+  job,
+  whatsapp,
+}: {
+  lang: Lang;
+  job: Pick<JobLite, "title" | "companyName" | "location" | "salaryText">;
+  /** Company WhatsApp number; after submitting, the visitor can send their details there. */
+  whatsapp?: string;
+}) {
   const t = COPY[lang];
   const f = t.form;
   const uid = useId();
@@ -111,10 +240,14 @@ export function ApplyForm({ lang, job }: { lang: Lang; job: Pick<JobLite, "title
   const [loc, setLoc] = useState(OPTIONS.currentLocation[0].value);
   const [visa, setVisa] = useState(OPTIONS.visa[0].value);
   const [remarks, setRemarks] = useState("");
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [waHref, setWaHref] = useState<string | null>(null);
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">(
+    "idle",
+  );
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
     setState("sending");
     const company = job.companyName || "SASHA General Contracting";
     const message = [
@@ -134,19 +267,41 @@ export function ApplyForm({ lang, job }: { lang: Lang; job: Pick<JobLite, "title
       .filter(Boolean)
       .join("\n");
 
-    const ok = await postEnquiry({
-      name,
-      phone,
-      email: email || undefined,
-      kind: "Worker Direct Job Application",
-      companyName: company,
-      projectLocation: job.location || "Abu Dhabi",
-      tradePosition: job.title,
-      experience: exp,
-      remarks,
-      message,
-    });
+    const ok = await postEnquiry(
+      {
+        name,
+        phone,
+        email: email || undefined,
+        kind: "Worker Direct Job Application",
+        companyName: company,
+        projectLocation: job.location || "Abu Dhabi",
+        tradePosition: job.title,
+        experience: exp,
+        remarks,
+        message,
+      },
+      form,
+      lang,
+    );
     if (ok) {
+      setWaHref(
+        whatsapp
+          ? whatsappDraft(whatsapp, t.wa.roleIntro(job.title), [
+              [f.fullName, name],
+              [t.wa.phone, phone],
+              [
+                f.yearsExperience,
+                optionLabel(OPTIONS.workerExperience, exp, lang),
+              ],
+              [
+                f.currentLocation,
+                optionLabel(OPTIONS.currentLocation, loc, lang),
+              ],
+              [f.visa, optionLabel(OPTIONS.visa, visa, lang)],
+              [f.remarks, remarks],
+            ])
+          : null,
+      );
       setName("");
       setPhone("");
       setEmail("");
@@ -156,32 +311,97 @@ export function ApplyForm({ lang, job }: { lang: Lang; job: Pick<JobLite, "title
   }
 
   if (state === "done") {
-    return <Success title={f.successTitle} text={f.successWorker} again={f.again} onAgain={() => setState("idle")} />;
+    return (
+      <Success
+        title={f.successTitle}
+        text={f.successWorker}
+        again={f.again}
+        onAgain={() => setState("idle")}
+        lang={lang}
+        waHref={waHref}
+      />
+    );
   }
 
   return (
     <form className="form" onSubmit={submit}>
+      <SpamTrap />
       <div className="form__grid">
         <Field id={`${uid}-n`} label={f.fullName} required>
-          <input id={`${uid}-n`} className="input" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} autoComplete="name" placeholder={f.ph.fullName} />
+          <input
+            id={`${uid}-n`}
+            className="input"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            minLength={2}
+            autoComplete="name"
+            placeholder={f.ph.fullName}
+          />
         </Field>
         <Field id={`${uid}-p`} label={f.phone} required>
-          <input id={`${uid}-p`} className="input" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required minLength={5} autoComplete="tel" inputMode="tel" placeholder={f.ph.workerPhone} dir="ltr" />
+          <input
+            id={`${uid}-p`}
+            className="input"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+            minLength={5}
+            autoComplete="tel"
+            inputMode="tel"
+            placeholder={f.ph.workerPhone}
+            dir="ltr"
+          />
         </Field>
         <Field id={`${uid}-x`} label={f.yearsExperience}>
-          <Select id={`${uid}-x`} value={exp} onChange={setExp} options={OPTIONS.workerExperience} lang={lang} />
+          <Select
+            id={`${uid}-x`}
+            value={exp}
+            onChange={setExp}
+            options={OPTIONS.workerExperience}
+            lang={lang}
+          />
         </Field>
         <Field id={`${uid}-l`} label={f.currentLocation}>
-          <Select id={`${uid}-l`} value={loc} onChange={setLoc} options={OPTIONS.currentLocation} lang={lang} />
+          <Select
+            id={`${uid}-l`}
+            value={loc}
+            onChange={setLoc}
+            options={OPTIONS.currentLocation}
+            lang={lang}
+          />
         </Field>
         <Field id={`${uid}-v`} label={f.visa}>
-          <Select id={`${uid}-v`} value={visa} onChange={setVisa} options={OPTIONS.visa} lang={lang} />
+          <Select
+            id={`${uid}-v`}
+            value={visa}
+            onChange={setVisa}
+            options={OPTIONS.visa}
+            lang={lang}
+          />
         </Field>
         <Field id={`${uid}-e`} label={f.email} hint={f.optional}>
-          <input id={`${uid}-e`} className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder={f.ph.email} dir="ltr" />
+          <input
+            id={`${uid}-e`}
+            className="input"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            placeholder={f.ph.email}
+            dir="ltr"
+          />
         </Field>
         <Field id={`${uid}-r`} label={f.remarks} hint={f.optional} wide>
-          <textarea id={`${uid}-r`} className="input input--area" rows={3} value={remarks} onChange={(e) => setRemarks(e.target.value)} placeholder={f.remarksWorker} />
+          <textarea
+            id={`${uid}-r`}
+            className="input input--area"
+            rows={3}
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            placeholder={f.remarksWorker}
+          />
         </Field>
       </div>
       {state === "error" && (
@@ -189,7 +409,11 @@ export function ApplyForm({ lang, job }: { lang: Lang; job: Pick<JobLite, "title
           {f.error}
         </p>
       )}
-      <button type="submit" className="btn btn--primary btn--block" disabled={state === "sending"}>
+      <button
+        type="submit"
+        className="btn btn--primary btn--block"
+        disabled={state === "sending"}
+      >
         {state === "sending" ? f.sending : t.apply.submit}
       </button>
     </form>
@@ -198,24 +422,38 @@ export function ApplyForm({ lang, job }: { lang: Lang; job: Pick<JobLite, "title
 
 /* ---------- Employer requirement / general worker application ---------- */
 
-export function RequirementForm({ lang }: { lang: Lang }) {
+export function RequirementForm({
+  lang,
+  whatsapp,
+}: {
+  lang: Lang;
+  whatsapp?: string;
+}) {
   const t = COPY[lang];
   const f = t.form;
   const uid = useId();
   const [mode, setMode] = useState<"employer" | "worker">("employer");
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">(
+    "idle",
+  );
 
   const [companyName, setCompanyName] = useState("");
   const [contactPerson, setContactPerson] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [projectSite, setProjectSite] = useState("");
-  const [projectLocation, setProjectLocation] = useState(OPTIONS.locations[0].value);
+  const [projectLocation, setProjectLocation] = useState(
+    OPTIONS.locations[0].value,
+  );
   const [trade, setTrade] = useState(OPTIONS.trades[0].value);
   const [customTrade, setCustomTrade] = useState("");
   const [workersCount, setWorkersCount] = useState(OPTIONS.workers[1].value);
-  const [experience, setExperience] = useState(OPTIONS.employerExperience[1].value);
-  const [mobilisation, setMobilisation] = useState(OPTIONS.mobilisation[1].value);
+  const [experience, setExperience] = useState(
+    OPTIONS.employerExperience[1].value,
+  );
+  const [mobilisation, setMobilisation] = useState(
+    OPTIONS.mobilisation[1].value,
+  );
   const [duration, setDuration] = useState(OPTIONS.duration[1].value);
   const [provAccom, setProvAccom] = useState(true);
   const [provTransport, setProvTransport] = useState(true);
@@ -227,6 +465,7 @@ export function RequirementForm({ lang }: { lang: Lang }) {
   const [workerExp, setWorkerExp] = useState(OPTIONS.workerExperience[1].value);
   const [workerLoc, setWorkerLoc] = useState(OPTIONS.currentLocation[0].value);
   const [workerVisa, setWorkerVisa] = useState(OPTIONS.visa[0].value);
+  const [waHref, setWaHref] = useState<string | null>(null);
 
   function switchMode(next: "employer" | "worker") {
     setMode(next);
@@ -246,13 +485,17 @@ export function RequirementForm({ lang }: { lang: Lang }) {
     return () => window.removeEventListener("hashchange", open);
   }, []);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
     setState("sending");
     let body: Record<string, unknown>;
 
     if (mode === "employer") {
-      const activeTrade = trade === "Other Trade" && customTrade.trim() ? customTrade.trim() : trade;
+      const activeTrade =
+        trade === "Other Trade" && customTrade.trim()
+          ? customTrade.trim()
+          : trade;
       const provisions = [
         provAccom ? "Accommodation by SASHA" : "Accommodation by Client",
         provTransport ? "Transport by SASHA" : "Transport by Client",
@@ -319,8 +562,53 @@ export function RequirementForm({ lang }: { lang: Lang }) {
       };
     }
 
-    const ok = await postEnquiry(body);
+    const ok = await postEnquiry(body, form, lang);
     if (ok) {
+      const tradeLabel =
+        trade === "Other Trade" && customTrade.trim()
+          ? customTrade.trim()
+          : optionLabel(OPTIONS.trades, trade, lang);
+      setWaHref(
+        !whatsapp
+          ? null
+          : mode === "employer"
+            ? whatsappDraft(whatsapp, t.wa.employerIntro, [
+                [f.company, companyName],
+                [f.contactPerson, contactPerson],
+                [t.wa.phone, phone],
+                [f.projectSite, projectSite],
+                [
+                  f.location,
+                  optionLabel(OPTIONS.locations, projectLocation, lang),
+                ],
+                [f.trade, tradeLabel],
+                [
+                  f.workersCount,
+                  optionLabel(OPTIONS.workers, workersCount, lang),
+                ],
+                [
+                  f.mobilisation,
+                  optionLabel(OPTIONS.mobilisation, mobilisation, lang),
+                ],
+                [f.duration, optionLabel(OPTIONS.duration, duration, lang)],
+                [f.remarks, remarks],
+              ])
+            : whatsappDraft(whatsapp, t.wa.workerIntro, [
+                [f.fullName, contactPerson],
+                [t.wa.phone, phone],
+                [f.applyingFor, applyingFor],
+                [
+                  f.yearsExperience,
+                  optionLabel(OPTIONS.workerExperience, workerExp, lang),
+                ],
+                [
+                  f.currentLocation,
+                  optionLabel(OPTIONS.currentLocation, workerLoc, lang),
+                ],
+                [f.visa, optionLabel(OPTIONS.visa, workerVisa, lang)],
+                [f.remarks, remarks],
+              ]),
+      );
       setCompanyName("");
       setContactPerson("");
       setPhone("");
@@ -350,10 +638,19 @@ export function RequirementForm({ lang }: { lang: Lang }) {
         ]}
       />
 
-      <div className="req__panel" role="tabpanel" id={id("panel")} aria-labelledby={`${id("tabs")}-tab-${mode}`}>
+      <div
+        className="req__panel"
+        role="tabpanel"
+        id={id("panel")}
+        aria-labelledby={`${id("tabs")}-tab-${mode}`}
+      >
         <div className="req__head">
-          <h3 className="req__title">{employer ? f.employerTitle : f.workerTitle}</h3>
-          <p className="req__lead">{employer ? f.employerLead : f.workerLead}</p>
+          <h3 className="req__title">
+            {employer ? f.employerTitle : f.workerTitle}
+          </h3>
+          <p className="req__lead">
+            {employer ? f.employerLead : f.workerLead}
+          </p>
         </div>
 
         {state === "done" ? (
@@ -362,29 +659,83 @@ export function RequirementForm({ lang }: { lang: Lang }) {
             text={employer ? f.successEmployer : f.successWorker}
             again={f.again}
             onAgain={() => setState("idle")}
+            lang={lang}
+            waHref={waHref}
           />
         ) : (
           <form className="form" onSubmit={submit}>
+            <SpamTrap />
             <fieldset className="form__set">
-              <legend className="form__legend">{employer ? f.sec.contact : f.sec.candidate}</legend>
+              <legend className="form__legend">
+                {employer ? f.sec.contact : f.sec.candidate}
+              </legend>
               <div className="form__grid">
                 {employer && (
                   <Field id={id("co")} label={f.company} required>
-                    <input id={id("co")} className="input" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required autoComplete="organization" placeholder={f.ph.company} />
+                    <input
+                      id={id("co")}
+                      className="input"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      required
+                      autoComplete="organization"
+                      placeholder={f.ph.company}
+                    />
                   </Field>
                 )}
-                <Field id={id("cp")} label={employer ? f.contactPerson : f.fullName} required>
-                  <input id={id("cp")} className="input" value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} required minLength={2} autoComplete="name" placeholder={employer ? f.ph.contactPerson : f.ph.fullName} />
+                <Field
+                  id={id("cp")}
+                  label={employer ? f.contactPerson : f.fullName}
+                  required
+                >
+                  <input
+                    id={id("cp")}
+                    className="input"
+                    value={contactPerson}
+                    onChange={(e) => setContactPerson(e.target.value)}
+                    required
+                    minLength={2}
+                    autoComplete="name"
+                    placeholder={employer ? f.ph.contactPerson : f.ph.fullName}
+                  />
                 </Field>
                 <Field id={id("ph")} label={f.phone} required>
-                  <input id={id("ph")} className="input" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required minLength={5} autoComplete="tel" inputMode="tel" placeholder={employer ? f.ph.phone : f.ph.workerPhone} dir="ltr" />
+                  <input
+                    id={id("ph")}
+                    className="input"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                    minLength={5}
+                    autoComplete="tel"
+                    inputMode="tel"
+                    placeholder={employer ? f.ph.phone : f.ph.workerPhone}
+                    dir="ltr"
+                  />
                 </Field>
                 <Field id={id("em")} label={f.email} hint={f.optional}>
-                  <input id={id("em")} className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder={f.ph.email} dir="ltr" />
+                  <input
+                    id={id("em")}
+                    className="input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    placeholder={f.ph.email}
+                    dir="ltr"
+                  />
                 </Field>
                 {!employer && (
                   <Field id={id("af")} label={f.applyingFor} required>
-                    <input id={id("af")} className="input" value={applyingFor} onChange={(e) => setApplyingFor(e.target.value)} required placeholder={f.ph.applyingFor} />
+                    <input
+                      id={id("af")}
+                      className="input"
+                      value={applyingFor}
+                      onChange={(e) => setApplyingFor(e.target.value)}
+                      required
+                      placeholder={f.ph.applyingFor}
+                    />
                   </Field>
                 )}
               </div>
@@ -396,10 +747,23 @@ export function RequirementForm({ lang }: { lang: Lang }) {
                   <legend className="form__legend">{f.sec.site}</legend>
                   <div className="form__grid">
                     <Field id={id("ps")} label={f.projectSite} required>
-                      <input id={id("ps")} className="input" value={projectSite} onChange={(e) => setProjectSite(e.target.value)} required placeholder={f.ph.projectSite} />
+                      <input
+                        id={id("ps")}
+                        className="input"
+                        value={projectSite}
+                        onChange={(e) => setProjectSite(e.target.value)}
+                        required
+                        placeholder={f.ph.projectSite}
+                      />
                     </Field>
                     <Field id={id("pl")} label={f.location}>
-                      <Select id={id("pl")} value={projectLocation} onChange={setProjectLocation} options={OPTIONS.locations} lang={lang} />
+                      <Select
+                        id={id("pl")}
+                        value={projectLocation}
+                        onChange={setProjectLocation}
+                        options={OPTIONS.locations}
+                        lang={lang}
+                      />
                     </Field>
                   </div>
                 </fieldset>
@@ -408,24 +772,61 @@ export function RequirementForm({ lang }: { lang: Lang }) {
                   <legend className="form__legend">{f.sec.crew}</legend>
                   <div className="form__grid form__grid--3">
                     <Field id={id("tr")} label={f.trade}>
-                      <Select id={id("tr")} value={trade} onChange={setTrade} options={OPTIONS.trades} lang={lang} />
+                      <Select
+                        id={id("tr")}
+                        value={trade}
+                        onChange={setTrade}
+                        options={OPTIONS.trades}
+                        lang={lang}
+                      />
                     </Field>
                     <Field id={id("wc")} label={f.workersCount}>
-                      <Select id={id("wc")} value={workersCount} onChange={setWorkersCount} options={OPTIONS.workers} lang={lang} />
+                      <Select
+                        id={id("wc")}
+                        value={workersCount}
+                        onChange={setWorkersCount}
+                        options={OPTIONS.workers}
+                        lang={lang}
+                      />
                     </Field>
                     <Field id={id("ex")} label={f.experience}>
-                      <Select id={id("ex")} value={experience} onChange={setExperience} options={OPTIONS.employerExperience} lang={lang} />
+                      <Select
+                        id={id("ex")}
+                        value={experience}
+                        onChange={setExperience}
+                        options={OPTIONS.employerExperience}
+                        lang={lang}
+                      />
                     </Field>
                     {trade === "Other Trade" && (
                       <Field id={id("ot")} label={f.otherTrade} required wide>
-                        <input id={id("ot")} className="input" value={customTrade} onChange={(e) => setCustomTrade(e.target.value)} required placeholder={f.ph.otherTrade} />
+                        <input
+                          id={id("ot")}
+                          className="input"
+                          value={customTrade}
+                          onChange={(e) => setCustomTrade(e.target.value)}
+                          required
+                          placeholder={f.ph.otherTrade}
+                        />
                       </Field>
                     )}
                     <Field id={id("mb")} label={f.mobilisation}>
-                      <Select id={id("mb")} value={mobilisation} onChange={setMobilisation} options={OPTIONS.mobilisation} lang={lang} />
+                      <Select
+                        id={id("mb")}
+                        value={mobilisation}
+                        onChange={setMobilisation}
+                        options={OPTIONS.mobilisation}
+                        lang={lang}
+                      />
                     </Field>
                     <Field id={id("du")} label={f.duration}>
-                      <Select id={id("du")} value={duration} onChange={setDuration} options={OPTIONS.duration} lang={lang} />
+                      <Select
+                        id={id("du")}
+                        value={duration}
+                        onChange={setDuration}
+                        options={OPTIONS.duration}
+                        lang={lang}
+                      />
                     </Field>
                   </div>
                 </fieldset>
@@ -442,7 +843,11 @@ export function RequirementForm({ lang }: { lang: Lang }) {
                       ] as [boolean, (v: boolean) => void, string][]
                     ).map(([checked, set, label]) => (
                       <label key={label} className="check">
-                        <input type="checkbox" checked={checked} onChange={(e) => set(e.target.checked)} />
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) => set(e.target.checked)}
+                        />
                         <span>{label}</span>
                       </label>
                     ))}
@@ -454,13 +859,31 @@ export function RequirementForm({ lang }: { lang: Lang }) {
                 <legend className="form__legend">{f.sec.availability}</legend>
                 <div className="form__grid form__grid--3">
                   <Field id={id("wx")} label={f.yearsExperience}>
-                    <Select id={id("wx")} value={workerExp} onChange={setWorkerExp} options={OPTIONS.workerExperience} lang={lang} />
+                    <Select
+                      id={id("wx")}
+                      value={workerExp}
+                      onChange={setWorkerExp}
+                      options={OPTIONS.workerExperience}
+                      lang={lang}
+                    />
                   </Field>
                   <Field id={id("wl")} label={f.currentLocation}>
-                    <Select id={id("wl")} value={workerLoc} onChange={setWorkerLoc} options={OPTIONS.currentLocation} lang={lang} />
+                    <Select
+                      id={id("wl")}
+                      value={workerLoc}
+                      onChange={setWorkerLoc}
+                      options={OPTIONS.currentLocation}
+                      lang={lang}
+                    />
                   </Field>
                   <Field id={id("wv")} label={f.visa}>
-                    <Select id={id("wv")} value={workerVisa} onChange={setWorkerVisa} options={OPTIONS.visa} lang={lang} />
+                    <Select
+                      id={id("wv")}
+                      value={workerVisa}
+                      onChange={setWorkerVisa}
+                      options={OPTIONS.visa}
+                      lang={lang}
+                    />
                   </Field>
                 </div>
               </fieldset>
@@ -469,7 +892,14 @@ export function RequirementForm({ lang }: { lang: Lang }) {
             <fieldset className="form__set">
               <legend className="form__legend">{f.sec.notes}</legend>
               <Field id={id("rm")} label={f.remarks} hint={f.optional} wide>
-                <textarea id={id("rm")} className="input input--area" rows={3} value={remarks} onChange={(e) => setRemarks(e.target.value)} placeholder={employer ? f.remarksEmployer : f.remarksWorker} />
+                <textarea
+                  id={id("rm")}
+                  className="input input--area"
+                  rows={3}
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  placeholder={employer ? f.remarksEmployer : f.remarksWorker}
+                />
               </Field>
             </fieldset>
 
@@ -478,8 +908,16 @@ export function RequirementForm({ lang }: { lang: Lang }) {
                 {f.error}
               </p>
             )}
-            <button type="submit" className="btn btn--primary btn--lg form__submit" disabled={state === "sending"}>
-              {state === "sending" ? f.sending : employer ? f.submitEmployer : f.submitWorker}
+            <button
+              type="submit"
+              className="btn btn--primary btn--lg form__submit"
+              disabled={state === "sending"}
+            >
+              {state === "sending"
+                ? f.sending
+                : employer
+                  ? f.submitEmployer
+                  : f.submitWorker}
             </button>
           </form>
         )}
