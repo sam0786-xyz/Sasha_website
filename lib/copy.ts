@@ -1,91 +1,91 @@
-// All public-site copy in English, Arabic and Hinglish.
+// All public-site copy in English, Arabic, Hindi and Hinglish.
 // Option `value`s stay in English so the operations desk always receives the same text.
 
-export type Lang = "en" | "ar" | "hi";
-export const LANGS: Lang[] = ["en", "ar", "hi"];
+export type Lang = "en" | "ar" | "hi" | "hinglish";
+export const LANGS: Lang[] = ["en", "ar", "hi", "hinglish"];
 
 export function isLang(v: unknown): v is Lang {
-  return v === "en" || v === "ar" || v === "hi";
+  return v === "en" || v === "ar" || v === "hi" || v === "hinglish";
 }
 
-/** BCP 47 tags: Hinglish is Hindi written in Latin script. */
-export const HTML_LANG: Record<Lang, string> = { en: "en", ar: "ar", hi: "hi-Latn" };
-export const LANG_NAME: Record<Lang, string> = { en: "English", ar: "العربية", hi: "Hinglish" };
-export const LANG_SHORT: Record<Lang, string> = { en: "EN", ar: "عربي", hi: "Hinglish" };
+/** BCP 47 tags: Hindi in Devanagari is "hi"; Hinglish is Hindi written in Latin script. */
+export const HTML_LANG: Record<Lang, string> = { en: "en", ar: "ar", hi: "hi", hinglish: "hi-Latn" };
+export const LANG_NAME: Record<Lang, string> = { en: "English", ar: "العربية", hi: "हिन्दी", hinglish: "Hinglish" };
+export const LANG_SHORT: Record<Lang, string> = { en: "EN", ar: "عربي", hi: "हिन्दी", hinglish: "Hinglish" };
 
 export type Option = { value: string; label: Record<Lang, string> };
 
-const o = (value: string, en: string, ar: string, hi: string = en): Option => ({
+const o = (value: string, en: string, ar: string, hi: string, hinglish: string = en): Option => ({
   value,
-  label: { en, ar, hi },
+  label: { en, ar, hi, hinglish },
 });
 
 export const OPTIONS = {
   locations: [
-    o("Abu Dhabi - Saadiyat & Yas Islands", "Abu Dhabi – Saadiyat & Yas", "أبوظبي – السعديات وياس"),
-    o("Abu Dhabi - Mussafah Industrial Area", "Abu Dhabi – Mussafah", "أبوظبي – مصفح"),
-    o("Abu Dhabi - City Center / Reem / Maryah", "Abu Dhabi – City, Reem & Maryah", "أبوظبي – المدينة والريم والماريه"),
-    o("Abu Dhabi - Al Ain", "Al Ain", "العين"),
-    o("Abu Dhabi - Al Dhafra / Western Region", "Al Dhafra (Western Region)", "الظفرة (المنطقة الغربية)"),
-    o("Dubai Sites", "Dubai", "دبي"),
-    o("Sharjah & Northern Emirates", "Sharjah & Northern Emirates", "الشارقة والإمارات الشمالية"),
+    o("Abu Dhabi - Saadiyat & Yas Islands", "Abu Dhabi – Saadiyat & Yas", "أبوظبي – السعديات وياس", "अबू धाबी – सादियात और यास"),
+    o("Abu Dhabi - Mussafah Industrial Area", "Abu Dhabi – Mussafah", "أبوظبي – مصفح", "अबू धाबी – मुसफ्फह"),
+    o("Abu Dhabi - City Center / Reem / Maryah", "Abu Dhabi – City, Reem & Maryah", "أبوظبي – المدينة والريم والماريه", "अबू धाबी – सिटी, रीम और मरियाह"),
+    o("Abu Dhabi - Al Ain", "Al Ain", "العين", "अल ऐन"),
+    o("Abu Dhabi - Al Dhafra / Western Region", "Al Dhafra (Western Region)", "الظفرة (المنطقة الغربية)", "अल धफरा (पश्चिमी क्षेत्र)"),
+    o("Dubai Sites", "Dubai", "دبي", "दुबई"),
+    o("Sharjah & Northern Emirates", "Sharjah & Northern Emirates", "الشارقة والإمارات الشمالية", "शारजाह और उत्तरी अमीरात"),
   ],
   trades: [
-    o("Shuttering Carpenters", "Shuttering carpenters (formwork)", "نجارو القوالب (الشدات)", "Shuttering carpenter (formwork)"),
-    o("Structural Steel Fixers", "Steel fixers (rebar)", "حدادو التسليح", "Steel fixer (sariya)"),
-    o("Finishing & Block Masons", "Block & finishing masons", "بناؤو الطابوق والتشطيبات", "Block / finishing mason"),
-    o("Certified Electricians", "Electricians (MEP)", "كهربائيون (أعمال كهروميكانيكية)", "Electrician (MEP)"),
-    o("Plumbers & Pipe Fitters", "Plumbers & pipe fitters", "سباكون وفنيو أنابيب", "Plumber / pipe fitter"),
-    o("Certified Scaffolders", "Scaffolders", "فنيو السقالات", "Scaffolder"),
-    o("General Site Helpers", "General helpers & riggers", "عمال مساعدون وفنيو رفع", "Helper / rigger"),
-    o("Civil Site Foremen / Supervisors", "Foremen & site supervisors", "رؤساء عمال ومشرفو مواقع", "Foreman / supervisor"),
-    o("Multi-Trade Mobilization Crew", "Multi-trade crew", "فريق متعدد التخصصات", "Multi-trade crew"),
-    o("Other Trade", "Other trade", "تخصص آخر", "Koi aur trade"),
+    o("Shuttering Carpenters", "Shuttering carpenters (formwork)", "نجارو القوالب (الشدات)", "शटरिंग कारपेंटर (फॉर्मवर्क)", "Shuttering carpenter (formwork)"),
+    o("Structural Steel Fixers", "Steel fixers (rebar)", "حدادو التسليح", "स्टील फिक्सर (सरिया)", "Steel fixer (sariya)"),
+    o("Finishing & Block Masons", "Block & finishing masons", "بناؤو الطابوق والتشطيبات", "ब्लॉक / फिनिशिंग मिस्त्री", "Block / finishing mason"),
+    o("Certified Electricians", "Electricians (MEP)", "كهربائيون (أعمال كهروميكانيكية)", "इलेक्ट्रीशियन (MEP)", "Electrician (MEP)"),
+    o("Plumbers & Pipe Fitters", "Plumbers & pipe fitters", "سباكون وفنيو أنابيب", "प्लंबर / पाइप फिटर", "Plumber / pipe fitter"),
+    o("Certified Scaffolders", "Scaffolders", "فنيو السقالات", "स्कैफोल्डर", "Scaffolder"),
+    o("General Site Helpers", "General helpers & riggers", "عمال مساعدون وفنيو رفع", "हेल्पर / रिगर", "Helper / rigger"),
+    o("Civil Site Foremen / Supervisors", "Foremen & site supervisors", "رؤساء عمال ومشرفو مواقع", "फोरमैन / साइट सुपरवाइज़र", "Foreman / supervisor"),
+    o("Multi-Trade Mobilization Crew", "Multi-trade crew", "فريق متعدد التخصصات", "मल्टी-ट्रेड टीम", "Multi-trade crew"),
+    o("Other Trade", "Other trade", "تخصص آخر", "कोई अन्य ट्रेड", "Koi aur trade"),
   ],
   workers: [
-    o("1 to 5 Workers", "1–5", "١–٥"),
-    o("6 to 15 Workers", "6–15", "٦–١٥"),
-    o("16 to 30 Workers", "16–30", "١٦–٣٠"),
-    o("31 to 50 Workers", "31–50", "٣١–٥٠"),
-    o("50 to 100 Workers", "50–100", "٥٠–١٠٠"),
-    o("100+ Workers", "100+", "+١٠٠"),
+    o("1 to 5 Workers", "1–5", "١–٥", "1–5"),
+    o("6 to 15 Workers", "6–15", "٦–١٥", "6–15"),
+    o("16 to 30 Workers", "16–30", "١٦–٣٠", "16–30"),
+    o("31 to 50 Workers", "31–50", "٣١–٥٠", "31–50"),
+    o("50 to 100 Workers", "50–100", "٥٠–١٠٠", "50–100"),
+    o("100+ Workers", "100+", "+١٠٠", "100+"),
   ],
   employerExperience: [
-    o("1-2 Years Site Experience", "1–2 years on site", "١–٢ سنة في المواقع", "1–2 saal site experience"),
-    o("2+ Years UAE/GCC Site Experience", "2+ years UAE / GCC", "+٢ سنة في الإمارات أو الخليج", "2+ saal UAE / GCC"),
-    o("3-5 Years UAE Commercial Experience", "3–5 years UAE commercial", "٣–٥ سنوات في المشاريع التجارية بالإمارات", "3–5 saal UAE commercial"),
-    o("5+ Years Senior / Certified Trade", "5+ years, senior / certified", "+٥ سنوات، فني أول أو معتمد", "5+ saal, senior / certified"),
+    o("1-2 Years Site Experience", "1–2 years on site", "١–٢ سنة في المواقع", "साइट पर 1–2 साल", "1–2 saal site experience"),
+    o("2+ Years UAE/GCC Site Experience", "2+ years UAE / GCC", "+٢ سنة في الإمارات أو الخليج", "2+ साल UAE / GCC", "2+ saal UAE / GCC"),
+    o("3-5 Years UAE Commercial Experience", "3–5 years UAE commercial", "٣–٥ سنوات في المشاريع التجارية بالإمارات", "3–5 साल UAE कमर्शियल", "3–5 saal UAE commercial"),
+    o("5+ Years Senior / Certified Trade", "5+ years, senior / certified", "+٥ سنوات، فني أول أو معتمد", "5+ साल, सीनियर / सर्टिफ़ाइड", "5+ saal, senior / certified"),
   ],
   mobilisation: [
-    o("Immediate (Within 48h)", "Immediately (within 48 hours)", "فوراً (خلال ٤٨ ساعة)", "Turant (48 ghante mein)"),
-    o("Within 7 Days", "Within 7 days", "خلال ٧ أيام", "7 din ke andar"),
-    o("Within 15-30 Days", "Within 15–30 days", "خلال ١٥–٣٠ يوماً", "15–30 din ke andar"),
-    o("Planning / Future Tender", "Planning / future tender", "مرحلة التخطيط أو مناقصة قادمة", "Planning / aage ka tender"),
+    o("Immediate (Within 48h)", "Immediately (within 48 hours)", "فوراً (خلال ٤٨ ساعة)", "तुरंत (48 घंटे में)", "Turant (48 ghante mein)"),
+    o("Within 7 Days", "Within 7 days", "خلال ٧ أيام", "7 दिन के अंदर", "7 din ke andar"),
+    o("Within 15-30 Days", "Within 15–30 days", "خلال ١٥–٣٠ يوماً", "15–30 दिन के अंदर", "15–30 din ke andar"),
+    o("Planning / Future Tender", "Planning / future tender", "مرحلة التخطيط أو مناقصة قادمة", "योजना / आगामी टेंडर", "Planning / aage ka tender"),
   ],
   duration: [
-    o("1 to 3 Months", "1–3 months", "١–٣ أشهر", "1–3 mahine"),
-    o("3 to 6 Months", "3–6 months", "٣–٦ أشهر", "3–6 mahine"),
-    o("6 to 12 Months", "6–12 months", "٦–١٢ شهراً", "6–12 mahine"),
-    o("Turnkey / 1+ Year", "1 year or longer", "سنة أو أكثر", "1 saal ya zyada"),
+    o("1 to 3 Months", "1–3 months", "١–٣ أشهر", "1–3 महीने", "1–3 mahine"),
+    o("3 to 6 Months", "3–6 months", "٣–٦ أشهر", "3–6 महीने", "3–6 mahine"),
+    o("6 to 12 Months", "6–12 months", "٦–١٢ شهراً", "6–12 महीने", "6–12 mahine"),
+    o("Turnkey / 1+ Year", "1 year or longer", "سنة أو أكثر", "1 साल या उससे ज़्यादा", "1 saal ya zyada"),
   ],
   workerExperience: [
-    o("1 Year Experience", "Up to 1 year", "حتى سنة واحدة", "1 saal tak"),
-    o("2-3 Years UAE Experience", "2–3 years in the UAE", "٢–٣ سنوات في الإمارات", "2–3 saal UAE mein"),
-    o("4-6 Years Gulf Experience", "4–6 years in the Gulf", "٤–٦ سنوات في الخليج", "4–6 saal Gulf mein"),
-    o("7+ Years Senior Tradesman", "7+ years, senior tradesman", "+٧ سنوات، فني أول", "7+ saal, senior karigar"),
+    o("1 Year Experience", "Up to 1 year", "حتى سنة واحدة", "1 साल तक", "1 saal tak"),
+    o("2-3 Years UAE Experience", "2–3 years in the UAE", "٢–٣ سنوات في الإمارات", "UAE में 2–3 साल", "2–3 saal UAE mein"),
+    o("4-6 Years Gulf Experience", "4–6 years in the Gulf", "٤–٦ سنوات في الخليج", "खाड़ी देशों में 4–6 साल", "4–6 saal Gulf mein"),
+    o("7+ Years Senior Tradesman", "7+ years, senior tradesman", "+٧ سنوات، فني أول", "7+ साल, सीनियर कारीगर", "7+ saal, senior karigar"),
   ],
   currentLocation: [
-    o("Inside UAE (Abu Dhabi)", "In the UAE – Abu Dhabi", "داخل الإمارات – أبوظبي", "UAE mein – Abu Dhabi"),
-    o("Inside UAE (Dubai / Sharjah)", "In the UAE – Dubai / Sharjah", "داخل الإمارات – دبي أو الشارقة", "UAE mein – Dubai / Sharjah"),
-    o("Outside UAE (India)", "Outside the UAE – India", "خارج الإمارات – الهند", "UAE ke bahar – India"),
-    o("Outside UAE (Pakistan)", "Outside the UAE – Pakistan", "خارج الإمارات – باكستان", "UAE ke bahar – Pakistan"),
-    o("Outside UAE (Bangladesh / Nepal / Other)", "Outside the UAE – Bangladesh, Nepal or other", "خارج الإمارات – بنغلاديش أو نيبال أو غيرها", "UAE ke bahar – Bangladesh, Nepal ya aur"),
+    o("Inside UAE (Abu Dhabi)", "In the UAE – Abu Dhabi", "داخل الإمارات – أبوظبي", "UAE में – अबू धाबी", "UAE mein – Abu Dhabi"),
+    o("Inside UAE (Dubai / Sharjah)", "In the UAE – Dubai / Sharjah", "داخل الإمارات – دبي أو الشارقة", "UAE में – दुबई / शारजाह", "UAE mein – Dubai / Sharjah"),
+    o("Outside UAE (India)", "Outside the UAE – India", "خارج الإمارات – الهند", "UAE के बाहर – भारत", "UAE ke bahar – India"),
+    o("Outside UAE (Pakistan)", "Outside the UAE – Pakistan", "خارج الإمارات – باكستان", "UAE के बाहर – पाकिस्तान", "UAE ke bahar – Pakistan"),
+    o("Outside UAE (Bangladesh / Nepal / Other)", "Outside the UAE – Bangladesh, Nepal or other", "خارج الإمارات – بنغلاديش أو نيبال أو غيرها", "UAE के बाहर – बांग्लादेश, नेपाल या अन्य", "UAE ke bahar – Bangladesh, Nepal ya aur"),
   ],
   visa: [
-    o("Visit Visa / Ready for Transfer", "Visit visa, ready to transfer", "تأشيرة زيارة وجاهز للتحويل", "Visit visa, transfer ke liye ready"),
-    o("Cancelled Visa / Grace Period", "Visa cancelled, in grace period", "تأشيرة ملغاة وفي فترة السماح", "Visa cancel, grace period mein"),
-    o("Employment Visa with NOC", "Employment visa with NOC", "تأشيرة عمل مع شهادة عدم ممانعة", "Employment visa, NOC ke saath"),
-    o("Need New UAE Employment Visa", "Need a new UAE employment visa", "أحتاج تأشيرة عمل جديدة", "Naya UAE employment visa chahiye"),
+    o("Visit Visa / Ready for Transfer", "Visit visa, ready to transfer", "تأشيرة زيارة وجاهز للتحويل", "विज़िट वीज़ा, ट्रांसफ़र के लिए तैयार", "Visit visa, transfer ke liye ready"),
+    o("Cancelled Visa / Grace Period", "Visa cancelled, in grace period", "تأشيرة ملغاة وفي فترة السماح", "वीज़ा रद्द, ग्रेस पीरियड में", "Visa cancel, grace period mein"),
+    o("Employment Visa with NOC", "Employment visa with NOC", "تأشيرة عمل مع شهادة عدم ممانعة", "NOC के साथ रोज़गार वीज़ा", "Employment visa, NOC ke saath"),
+    o("Need New UAE Employment Visa", "Need a new UAE employment visa", "أحتاج تأشيرة عمل جديدة", "नया UAE रोज़गार वीज़ा चाहिए", "Naya UAE employment visa chahiye"),
   ],
 };
 
@@ -373,6 +373,16 @@ const en = {
       workerPhone: "+971… or +91…",
       applyingFor: "e.g. Shuttering carpenter",
     },
+  },
+  wa: {
+    employerIntro: "Hello SASHA GC, I have just sent a manpower requirement on sashagc.com.",
+    workerIntro: "Hello SASHA GC, I have just applied for a job on sashagc.com.",
+    roleIntro: (title: string) => `Hello SASHA GC, I have just applied for the ${title} role on sashagc.com.`,
+    role: "Role",
+    phone: "Phone",
+    send: "Send on WhatsApp",
+    hintMobile: "Opening WhatsApp — tap Send so our team gets your details straight away.",
+    hintDesktop: "Send the same details on WhatsApp too, and our team can reply to you there.",
   },
   apply: {
     title: "Apply for this role",
@@ -674,6 +684,16 @@ const ar: Copy = {
       applyingFor: "مثال: نجار قوالب",
     },
   },
+  wa: {
+    employerIntro: "مرحباً ساشا، أرسلت للتو طلب قوى عاملة عبر موقع sashagc.com.",
+    workerIntro: "مرحباً ساشا، قدّمت للتو طلب توظيف عبر موقع sashagc.com.",
+    roleIntro: (title: string) => `مرحباً ساشا، قدّمت للتو على وظيفة ${title} عبر موقع sashagc.com.`,
+    role: "الوظيفة",
+    phone: "الهاتف",
+    send: "أرسل عبر واتساب",
+    hintMobile: "جارٍ فتح واتساب — اضغط «إرسال» ليصل طلبك إلى فريقنا فوراً.",
+    hintDesktop: "أرسل التفاصيل نفسها عبر واتساب أيضاً ليتمكن فريقنا من الرد عليك هناك.",
+  },
   apply: {
     title: "التقديم على هذه الوظيفة",
     lead: "أرسل بياناتك وسيتواصل معك الفريق هاتفياً أو عبر واتساب.",
@@ -695,7 +715,7 @@ const ar: Copy = {
   mobileBar: { call: "اتصال", whatsapp: "واتساب", request: "اطلب فريقاً" },
 };
 
-const hi: Copy = {
+const hinglish: Copy = {
   meta: {
     title: "SASHA General Contracting | Abu Dhabi mein construction kaam aur site jobs",
     description:
@@ -972,6 +992,16 @@ const hi: Copy = {
       applyingFor: "jaise: Shuttering carpenter",
     },
   },
+  wa: {
+    employerIntro: "Namaste SASHA GC, maine abhi sashagc.com par manpower requirement bheji hai.",
+    workerIntro: "Namaste SASHA GC, maine abhi sashagc.com par job ke liye apply kiya hai.",
+    roleIntro: (title: string) => `Namaste SASHA GC, maine abhi sashagc.com par ${title} job ke liye apply kiya hai.`,
+    role: "Job",
+    phone: "Phone",
+    send: "WhatsApp par bhejein",
+    hintMobile: "WhatsApp khul raha hai — Send dabayein, taaki aapki details turant hamari team tak pahunchein.",
+    hintDesktop: "Yahi details WhatsApp par bhi bhejein, taaki hamari team aapko wahin jawab de sake.",
+  },
   apply: {
     title: "Is job ke liye apply karein",
     lead: "Apni details bhejein, team aapko call ya WhatsApp karegi.",
@@ -993,7 +1023,315 @@ const hi: Copy = {
   mobileBar: { call: "Call", whatsapp: "WhatsApp", request: "Crew mangwayein" },
 };
 
-export const COPY: Record<Lang, Copy> = { en, ar, hi };
+const hi: Copy = {
+  meta: {
+    title: "साशा जनरल कॉन्ट्रैक्टिंग | अबू धाबी में बिल्डिंग कॉन्ट्रैक्टर और साइट की नौकरियाँ",
+    description:
+      "अबू धाबी की लाइसेंसधारी बिल्डिंग कॉन्ट्रैक्टिंग कंपनी: स्ट्रक्चरल, सिविल, MEP और फिनिशिंग का काम, कुशल साइट टीमें, और कामगारों के लिए नौकरियाँ — बिना किसी फ़ीस के।",
+  },
+  skip: "मुख्य सामग्री पर जाएँ",
+  nav: {
+    services: "सेवाएँ",
+    process: "काम का तरीका",
+    roles: "नौकरियाँ",
+    company: "कंपनी",
+    faq: "सवाल-जवाब",
+    contact: "संपर्क",
+  },
+  ui: {
+    menu: "मेन्यू",
+    close: "बंद करें",
+    language: "भाषा",
+    themeDark: "डार्क थीम",
+    themeLight: "लाइट थीम",
+    requestCrew: "टीम मँगवाएँ",
+    seeRoles: "नौकरियाँ देखें",
+    call: "कॉल",
+    whatsapp: "व्हाट्सऐप",
+    email: "ईमेल",
+  },
+  hero: {
+    eyebrow: "अबू धाबी · बिल्डिंग कॉन्ट्रैक्टिंग",
+    title: "अबू धाबी के प्रोजेक्ट्स के लिए निर्माण कार्य और कुशल साइट टीमें।",
+    lead:
+      "SASHA General Contracting स्ट्रक्चरल, सिविल, MEP और फिनिशिंग का काम करती है, और UAE के कॉन्ट्रैक्टरों व डेवलपरों को सुपरवाइज़र की निगरानी में प्रशिक्षित कारीगर उपलब्ध कराती है। हर काम लिखित समझौते पर होता है।",
+    recordTitle: "कंपनी का विवरण",
+    record: [
+      { k: "लाइसेंस प्राप्त काम", v: "All Kind Building Projects Contracting" },
+      { k: "पंजीकरण", v: "अबू धाबी, संयुक्त अरब अमीरात" },
+      { k: "कानूनी स्वरूप", v: "L.L.C – S.P.C" },
+      { k: "भाषाएँ", v: "हिन्दी · English · العربية" },
+    ],
+    tradesLabel: "हम ये ट्रेड उपलब्ध कराते हैं",
+    trades: ["शटरिंग कारपेंटर", "स्टील फिक्सर", "ब्लॉक मिस्त्री", "इलेक्ट्रीशियन", "प्लंबर", "स्कैफोल्डर", "फोरमैन"],
+  },
+  paths: {
+    eyebrow: "हमारे साथ काम करें",
+    title: "दो रास्ते, एक ज़िम्मेदार टीम।",
+    contractor: {
+      label: "कॉन्ट्रैक्टरों और डेवलपरों के लिए",
+      title: "टीम या सबकॉन्ट्रैक्टर चाहिए?",
+      points: [
+        "फॉर्मवर्क से फिनिशिंग तक के ट्रेड, आपके प्रोग्राम के हिसाब से",
+        "माँगने पर रहने, आने-जाने और सुरक्षा उपकरण (PPE) की व्यवस्था",
+        "रोज़ की प्रगति और सुरक्षा के लिए साइट पर फोरमैन",
+      ],
+      cta: "रिक्वायरमेंट भेजें",
+    },
+    worker: {
+      label: "साइट कामगारों के लिए",
+      title: "अबू धाबी में निर्माण का काम ढूँढ रहे हैं?",
+      points: [
+        "अभी की नौकरियाँ, सैलरी पहले से साफ़ लिखी हुई",
+        "काम शुरू होने से पहले लिखित कॉन्ट्रैक्ट, UAE MOHRE नियमों के अनुसार",
+        "कोई भर्ती फ़ीस नहीं — कभी नहीं",
+      ],
+      cta: "नौकरियाँ देखें",
+    },
+  },
+  services: {
+    eyebrow: "सेवाएँ",
+    title: "हम क्या बनाते और उपलब्ध कराते हैं",
+    lead: "चार तरह का काम, हमारे अपने सुपरवाइज़रों और कारीगरों द्वारा।",
+    items: [
+      {
+        title: "स्ट्रक्चरल और सिविल कार्य",
+        desc: "नींव, RCC कंक्रीट फ्रेम, ब्लॉकवर्क और स्ट्रक्चरल फिनिशिंग।",
+        tags: ["फॉर्मवर्क", "सरिया", "कंक्रीट", "ब्लॉकवर्क"],
+      },
+      {
+        title: "MEP और फिनिशिंग",
+        desc: "बिजली और प्लंबिंग की लाइनें, प्लास्टर, टाइल्स और हैंडओवर तक की आर्किटेक्चरल फिनिशिंग।",
+        tags: ["इलेक्ट्रिकल", "प्लंबिंग", "प्लास्टर", "टाइल्स"],
+      },
+      {
+        title: "कामगार उपलब्ध कराना",
+        desc: "छोटे या लंबे प्रोजेक्ट्स के लिए कुशल और अर्ध-कुशल कारीगर।",
+        tags: ["कारपेंटर", "स्टील फिक्सर", "मिस्त्री", "स्कैफोल्डर"],
+      },
+      {
+        title: "सबकॉन्ट्रैक्ट और साइट मैनेजमेंट",
+        desc: "हमारे ज़िम्मे लिए गए काम पर साइट सुपरविज़न, रोज़ की प्रगति रिपोर्ट और सुरक्षा नियमों का पालन।",
+        tags: ["सुपरविज़न", "रिपोर्टिंग", "HSE"],
+      },
+    ],
+  },
+  process: {
+    eyebrow: "काम का तरीका",
+    title: "रिक्वायरमेंट से साइट तक",
+    steps: [
+      { title: "रिक्वायरमेंट भेजें", desc: "ट्रेड, कितने लोग, साइट की जगह और शुरू होने की तारीख — फ़ॉर्म, फ़ोन या व्हाट्सऐप से।" },
+      { title: "लिखित पुष्टि", desc: "काम शुरू होने से पहले हम टीम, रेट, सुविधाएँ और अवधि लिखित में पक्की करते हैं।" },
+      { title: "मोबिलाइज़ेशन", desc: "तय किए अनुसार दस्तावेज़, आने-जाने, रहने और PPE की व्यवस्था की जाती है।" },
+      { title: "साइट पर निगरानी", desc: "हमारे फोरमैन रोज़ की प्रगति और सुरक्षा सँभालते हैं और आपको रिपोर्ट देते हैं।" },
+    ],
+  },
+  roles: {
+    eyebrow: "नौकरियाँ",
+    title: "साइट पर अभी की नौकरियाँ",
+    lead: "हमारे अबू धाबी ऑपरेशंस डेस्क द्वारा पोस्ट की गई नौकरियाँ। सैलरी और शर्तें आपके लिखित कॉन्ट्रैक्ट में पक्की होती हैं।",
+    empty: "अभी कोई नौकरी खाली नहीं है। नए प्रोजेक्ट शुरू होने पर नौकरियाँ यहाँ पोस्ट होती हैं — कृपया जल्द दोबारा देखें।",
+    salary: "सैलरी",
+    experience: "अनुभव",
+    location: "जगह",
+    type: "ट्रेड",
+    requirements: "ज़रूरी बातें",
+    apply: "अभी आवेदन करें",
+    askWhatsApp: "व्हाट्सऐप पर पूछें",
+    details: "नौकरी का विवरण",
+    allTrades: "सभी ट्रेड",
+    filterLabel: "ट्रेड के अनुसार नौकरियाँ देखें",
+    emptyFilterTitle: "इस ट्रेड में अभी कोई नौकरी नहीं",
+    emptyFilterText: "कोई दूसरा ट्रेड चुनें, या अपना विवरण भेजें — हम आपसे संपर्क करेंगे।",
+    openApp: "आपका ट्रेड नहीं दिखा? अपना विवरण भेजें, सही नौकरी आते ही हम आपसे संपर्क करेंगे।",
+    openAppLink: "अपना विवरण भेजें",
+    count: (n: number) => (n === 1 ? "1 नौकरी खाली है" : `${n} नौकरियाँ खाली हैं`),
+    back: "सभी नौकरियाँ",
+    closed: "यह नौकरी अब बंद हो चुकी है। अभी की नौकरियाँ देखें।",
+    posted: "पोस्ट की गई",
+    askText: (title: string) => `नमस्ते SASHA GC, मुझे ${title} की नौकरी के बारे में पूछना है।`,
+  },
+  protect: {
+    title: "नौकरी के लिए कभी पैसे न दें।",
+    text:
+      "SASHA General Contracting कामगारों से कोई भर्ती या वीज़ा फ़ीस नहीं लेती, और UAE का कानून भी इसकी इजाज़त नहीं देता। अगर कोई हमारे नाम पर पैसे माँगे, तो बिल्कुल न दें — हमें कॉल या व्हाट्सऐप करके पुष्टि करें।",
+  },
+  company: {
+    eyebrow: "कंपनी",
+    title: "साइट के काम पर केंद्रित अबू धाबी की कॉन्ट्रैक्टिंग कंपनी",
+    p1:
+      "SASHA General Contracting अबू धाबी अमीरात के बिल्डिंग प्रोजेक्ट्स पर अनुभवी कारीगरों, साइट सुपरवाइज़रों और तकनीकी स्टाफ़ का समन्वय करती है, ताकि काम समय पर और UAE बिल्डिंग कोड के अनुसार हो।",
+    p2:
+      "हम डेवलपरों और मेन कॉन्ट्रैक्टरों के साथ काम करते हैं — खुदाई और फॉर्मवर्क से लेकर ब्लॉकवर्क, प्लास्टर और MEP इंस्टॉलेशन तक।",
+    noticeTitle: "कॉन्ट्रैक्ट और नियम",
+    notice:
+      "सभी भर्ती और प्रोजेक्ट समझौते UAE मानव संसाधन और अमीरातीकरण मंत्रालय (MOHRE) के नियमों के अनुसार लिखित दस्तावेज़ों के साथ किए जाते हैं।",
+    leadersTitle: "नेतृत्व",
+    leaders: [
+      {
+        name: "मोहम्मद नौशाद",
+        role: "मैनेजिंग डायरेक्टर",
+        image: "/mohammad-naushad.jpg",
+        bio: "कंपनी का प्रबंधन, कमर्शियल कॉन्ट्रैक्ट, नियमों का पालन और UAE में साझेदारियाँ सँभालते हैं।",
+      },
+      {
+        name: "अमज़द अली",
+        role: "डायरेक्टर – भारत ऑपरेशंस और मैनपावर मोबिलाइज़ेशन",
+        image: "/amzad-ali.jpg",
+        bio: "भारत में SASHA का काम सँभालते हैं: ट्रेड टेस्ट, उम्मीदवारों की जाँच, दस्तावेज़ों की पुष्टि और प्रोजेक्ट के लिए तैयार टीमों को समय पर UAE की साइटों तक भेजना।",
+      },
+    ],
+  },
+  faq: {
+    eyebrow: "सवाल-जवाब",
+    title: "अक्सर पूछे जाने वाले सवाल",
+    groups: [
+      { title: "SASHA के साथ काम", desc: "कॉन्ट्रैक्टरों, डेवलपरों और कंपनी के बारे में जानना चाहने वालों के लिए।", items: [0, 1, 2, 3, 4] },
+      { title: "साइट कामगारों के लिए", desc: "नौकरी के लिए आवेदन, और नकली नौकरी के ऑफ़र से बचाव।", items: [5, 6] },
+    ],
+    items: [
+      {
+        q: "SASHA General Contracting क्या काम करती है?",
+        a: "SASHA General Contracting अबू धाबी की बिल्डिंग कॉन्ट्रैक्टिंग कंपनी है, जिसके पास All Kind Building Projects Contracting का लाइसेंस है। यह स्ट्रक्चरल, सिविल, MEP और फिनिशिंग का काम करती है, और कॉन्ट्रैक्टरों व डेवलपरों को सुपरवाइज़र की निगरानी में साइट टीमें उपलब्ध कराती है।",
+      },
+      {
+        q: "कंपनी कहाँ काम करती है?",
+        a: "कंपनी अबू धाबी में पंजीकृत है और मुख्य रूप से अबू धाबी अमीरात में काम करती है — सादियात, यास, रीम, मुसफ्फह, अल ऐन और अल धफरा। दुबई, शारजाह और उत्तरी अमीरात की रिक्वायरमेंट पर भी विचार किया जाता है।",
+      },
+      {
+        q: "आप कौन-कौन से ट्रेड उपलब्ध करा सकते हैं?",
+        a: "शटरिंग कारपेंटर, स्टील फिक्सर, ब्लॉक और फिनिशिंग मिस्त्री, इलेक्ट्रीशियन, प्लंबर और पाइप फिटर, स्कैफोल्डर, हेल्पर और रिगर, और फोरमैन या साइट सुपरवाइज़र। ज़रूरत हो तो मल्टी-ट्रेड टीम भी बनाई जाती है।",
+      },
+      {
+        q: "अपने प्रोजेक्ट के लिए कामगार कैसे मँगवाएँ?",
+        a: "इस पेज के रिक्वायरमेंट फ़ॉर्म में ट्रेड, कितने लोग, साइट की जगह और शुरू होने की तारीख भेजें, या ऑपरेशंस डेस्क को कॉल या व्हाट्सऐप करें। मोबिलाइज़ेशन से पहले टीम, रेट और शर्तें लिखित में पक्की की जाती हैं।",
+      },
+      {
+        q: "क्या आप रहने, आने-जाने और PPE की व्यवस्था करते हैं?",
+        a: "हाँ, माँगने पर। रहने की जगह, साइट तक आने-जाने और सामान्य PPE को शामिल किया जा सकता है, और हर रिक्वायरमेंट के लिखित समझौते में यह दर्ज होता है।",
+      },
+      {
+        q: "SASHA में निर्माण की नौकरी के लिए आवेदन कैसे करें?",
+        a: "नौकरियाँ सेक्शन में कोई नौकरी चुनें और “अभी आवेदन करें” दबाएँ, या कामगार फ़ॉर्म से अपना विवरण भेजें। टीम आपसे फ़ोन या व्हाट्सऐप पर संपर्क करेगी। सैलरी और शर्तें UAE MOHRE नियमों के अनुसार लिखित कॉन्ट्रैक्ट में पक्की होती हैं।",
+      },
+      {
+        q: "क्या नौकरी पाने के लिए कोई फ़ीस देनी पड़ती है?",
+        a: "नहीं। SASHA General Contracting कामगारों से कोई भर्ती या वीज़ा फ़ीस नहीं लेती। अगर कोई कंपनी के नाम पर पैसे माँगे, तो न दें और सीधे कंपनी से संपर्क करें।",
+      },
+    ],
+  },
+  cta: {
+    eyebrow: "प्रोजेक्ट शुरू करें",
+    title: "अबू धाबी में आपका प्रोजेक्ट शुरू होने वाला है?",
+    desc: "हमें ट्रेड, कितने लोग और शुरू होने की तारीख बताएँ। किसी के साइट पर पहुँचने से पहले हम टीम और शर्तें लिखित में पक्की करते हैं।",
+    primary: "टीम मँगवाएँ",
+    secondary: "व्हाट्सऐप करें",
+  },
+  contact: {
+    eyebrow: "संपर्क",
+    title: "ऑपरेशंस डेस्क से बात करें",
+    lead: "नीचे रिक्वायरमेंट या आवेदन भेजें, या सीधे हमसे संपर्क करें।",
+    callLabel: "कॉल",
+    whatsappLabel: "व्हाट्सऐप",
+    emailLabel: "ईमेल",
+    officeLabel: "ऑफ़िस",
+    office: "अबू धाबी, संयुक्त अरब अमीरात",
+  },
+  form: {
+    tabsLabel: "फ़ॉर्म चुनें",
+    tabEmployer: "मुझे कामगार चाहिए",
+    tabWorker: "मुझे नौकरी चाहिए",
+    employerTitle: "मैनपावर और सबकॉन्ट्रैक्ट रिक्वायरमेंट",
+    employerLead: "आप जितना ज़्यादा विवरण देंगे, हम उतनी जल्दी टीम पक्की कर पाएँगे।",
+    workerTitle: "नौकरी के लिए आवेदन",
+    workerLead: "सही नौकरी के बारे में हम आपसे फ़ोन या व्हाट्सऐप पर संपर्क करेंगे।",
+    sec: {
+      contact: "आपका विवरण",
+      site: "प्रोजेक्ट और साइट",
+      crew: "कैसी टीम चाहिए",
+      provisions: "सुविधाएँ",
+      notes: "और कुछ",
+      candidate: "आपका विवरण",
+      availability: "अनुभव और उपलब्धता",
+    },
+    company: "कंपनी का नाम",
+    contactPerson: "संपर्क व्यक्ति",
+    fullName: "पूरा नाम",
+    phone: "मोबाइल / व्हाट्सऐप (देश कोड के साथ)",
+    email: "ईमेल",
+    optional: "वैकल्पिक",
+    projectSite: "प्रोजेक्ट या साइट का नाम",
+    location: "जगह",
+    trade: "ट्रेड",
+    otherTrade: "ट्रेड लिखें",
+    workersCount: "कितने कामगार",
+    experience: "अनुभव का स्तर",
+    mobilisation: "कब से चाहिए",
+    duration: "कितने समय के लिए",
+    applyingFor: "ट्रेड या पद",
+    yearsExperience: "साइट का अनुभव",
+    currentLocation: "आप अभी कहाँ हैं?",
+    visa: "वीज़ा की स्थिति",
+    provAccom: "रहने की व्यवस्था SASHA करेगी",
+    provTransport: "साइट तक आने-जाने की व्यवस्था SASHA करेगी",
+    provPPE: "सामान्य PPE ज़रूरी है",
+    provOvertime: "ओवरटाइम या रात की शिफ़्ट",
+    remarks: "नोट्स",
+    remarksEmployer: "शिफ़्ट का समय, सर्टिफ़िकेट, साइट पास या कोई और ज़रूरी बात",
+    remarksWorker: "पिछली कंपनियाँ, ख़ास हुनर या आप कब से जॉइन कर सकते हैं",
+    submitEmployer: "रिक्वायरमेंट भेजें",
+    submitWorker: "आवेदन भेजें",
+    sending: "भेजा जा रहा है…",
+    successTitle: "मिल गया — धन्यवाद।",
+    successEmployer: "टीम और शर्तें पक्की करने के लिए ऑपरेशंस डेस्क आपसे संपर्क करेगा।",
+    successWorker: "टीम आपसे फ़ोन या व्हाट्सऐप पर संपर्क करेगी।",
+    again: "एक और भेजें",
+    error: "यह भेजा नहीं जा सका। कृपया विवरण जाँचें, या हमें कॉल या व्हाट्सऐप करें।",
+    required: "ज़रूरी",
+    ph: {
+      company: "जैसे: अल नूर कॉन्ट्रैक्टिंग",
+      contactPerson: "पूरा नाम",
+      phone: "+971 5X XXX XXXX",
+      email: "name@company.ae",
+      projectSite: "जैसे: रीम आइलैंड टावर, प्लॉट 12",
+      otherTrade: "जैसे: 6G वेल्डर",
+      fullName: "आपका पूरा नाम",
+      workerPhone: "+971… या +91…",
+      applyingFor: "जैसे: शटरिंग कारपेंटर",
+    },
+  },
+  wa: {
+    employerIntro: "नमस्ते SASHA GC, मैंने अभी sashagc.com पर मैनपावर रिक्वायरमेंट भेजी है।",
+    workerIntro: "नमस्ते SASHA GC, मैंने अभी sashagc.com पर नौकरी के लिए आवेदन किया है।",
+    roleIntro: (title: string) => `नमस्ते SASHA GC, मैंने अभी sashagc.com पर ${title} की नौकरी के लिए आवेदन किया है।`,
+    role: "नौकरी",
+    phone: "फ़ोन",
+    send: "व्हाट्सऐप पर भेजें",
+    hintMobile: "व्हाट्सऐप खुल रहा है — “भेजें” दबाएँ, ताकि आपका विवरण तुरंत हमारी टीम तक पहुँचे।",
+    hintDesktop: "यही विवरण व्हाट्सऐप पर भी भेजें, ताकि हमारी टीम आपको वहीं जवाब दे सके।",
+  },
+  apply: {
+    title: "इस नौकरी के लिए आवेदन करें",
+    lead: "अपना विवरण भेजें, टीम आपसे फ़ोन या व्हाट्सऐप पर संपर्क करेगी।",
+    submit: "आवेदन भेजें",
+  },
+  footer: {
+    about:
+      "अबू धाबी की बिल्डिंग कॉन्ट्रैक्टिंग कंपनी, All Kind Building Projects Contracting लाइसेंस के साथ। स्ट्रक्चरल, सिविल, MEP और फिनिशिंग का काम, और सुपरवाइज़र की निगरानी में साइट टीमें।",
+    explore: "लिंक",
+    contact: "संपर्क",
+    languages: "भाषाएँ",
+    rights: "सर्वाधिकार सुरक्षित।",
+  },
+  suggest: {
+    text: "यह वेबसाइट हिन्दी में भी उपलब्ध है।",
+    action: "हिन्दी में देखें",
+    dismiss: "बंद करें",
+  },
+  mobileBar: { call: "कॉल", whatsapp: "व्हाट्सऐप", request: "टीम मँगवाएँ" },
+};
+
+export const COPY: Record<Lang, Copy> = { en, ar, hi, hinglish };
 
 export function langHref(path: string, lang: Lang): string {
   return `${path}?lang=${lang}`;

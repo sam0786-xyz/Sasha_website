@@ -5,7 +5,12 @@ import { SITE_URL } from "@/lib/site";
 export const dynamic = "force-dynamic";
 
 function languages(path: string) {
-  return { en: `${SITE_URL}${path}`, ar: `${SITE_URL}${path}?lang=ar`, "hi-Latn": `${SITE_URL}${path}?lang=hi` };
+  return {
+    en: `${SITE_URL}${path}`,
+    ar: `${SITE_URL}${path}?lang=ar`,
+    hi: `${SITE_URL}${path}?lang=hi`,
+    "hi-Latn": `${SITE_URL}${path}?lang=hinglish`,
+  };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -69,7 +69,7 @@ export function homeJsonLd(lang: Lang, phone: string) {
         "@id": WEBSITE_ID,
         url: SITE_URL,
         name: COMPANY.name,
-        inLanguage: ["en", "ar", "hi-Latn"],
+        inLanguage: ["en", "ar", "hi", "hi-Latn"],
         publisher: { "@id": ORG_ID },
       },
       {

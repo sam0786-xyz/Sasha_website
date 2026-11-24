@@ -51,7 +51,8 @@ ${t.faq.items.map((f) => `### ${f.q}\n${f.a}`).join("\n\n")}
 ## Pages
 - [Home (English)](${SITE_URL}/)
 - [Home (Arabic)](${SITE_URL}/?lang=ar)
-- [Home (Hinglish)](${SITE_URL}/?lang=hi)
+- [Home (Hindi)](${SITE_URL}/?lang=hi)
+- [Home (Hinglish)](${SITE_URL}/?lang=hinglish)
 `;
 
   return new Response(body, {

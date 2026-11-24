@@ -149,6 +149,20 @@
   padding-inline: var(--gutter);
 }
 
+/* Spam-trap form field: visually hidden in place (an off-screen offset would make RTL pages scroll). */
+.hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .skip {
   position: absolute;
   inset-inline-start: 16px;
@@ -242,6 +256,42 @@ html[lang="ar"] :is(.sec-title, .hero__title, .jobpage__title, .path__title, .se
 html[lang="ar"] :is(.eyebrow, .tag, .record__title, .record__row dt, .trades__label, .path__label, .service__num, .step__num, .role__meta dt, .roles__count, .notice__facts dt, .leader__role, .channel__label, .form__legend, .ftr__head, .service__tags li) {
   letter-spacing: 0;
   text-transform: none;
+}
+
+/* Hindi (Devanagari): Archivo for Latin, Mukta for Devanagari; taller lines for matras,
+   and no letter-spacing, which breaks the shirorekha (the joining headline). */
+html[lang="hi"] body {
+  font-family: var(--font-text), var(--font-devanagari), "Noto Sans Devanagari", sans-serif;
+  line-height: 1.75;
+}
+
+html[lang="hi"] {
+  --font-label: var(--font-devanagari), var(--font-text);
+}
+
+html[lang="hi"] :is(.sec-title, .hero__title, .jobpage__title, .path__title, .service__title, .req__title, .sheet__title, .leader__name, .protect__title) {
+  letter-spacing: 0;
+  line-height: 1.32;
+}
+
+html[lang="hi"] :is(.eyebrow, .tag, .record__title, .record__row dt, .trades__label, .path__label, .service__num, .step__num, .role__meta dt, .roles__count, .notice__facts dt, .leader__role, .channel__label, .form__legend, .ftr__head, .service__tags li),
+html[lang="hi"] [class*="tracking-"] {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Small labels: Devanagari and Arabic need more size than Latin small caps to stay legible. */
+html:is([lang="hi"], [lang="ar"]) :is(.eyebrow, .tag, .record__title, .record__row dt, .trades__label, .path__label, .role__meta dt, .roles__count, .notice__facts dt, .leader__role, .channel__label, .form__legend, .ftr__head, .service__tags li, .step__num) {
+  font-size: 0.84rem;
+}
+
+html:is([lang="hi"], [lang="ar"]) .font-mono {
+  font-size: 0.8rem;
+}
+
+/* The language switcher shows "हिन्दी" on every page. */
+.langs__item:lang(hi) {
+  font-family: var(--font-devanagari), var(--font-text);
 }
 
 /* English job data inside Arabic pages keeps its own direction but follows the page alignment. */
@@ -547,6 +597,94 @@ html[lang="ar"] [class*="tracking-"] {
 
 .hdr__menu {
   display: none;
+}
+
+/* Compact language menu, used on small screens instead of the segmented switch. */
+.langs-compact {
+  display: none;
+  position: relative;
+}
+
+.langs-compact > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  list-style: none;
+}
+
+.langs-compact > summary::-webkit-details-marker {
+  display: none;
+}
+
+.langs-compact > summary span:lang(hi) {
+  font-family: var(--font-devanagari), var(--font-text);
+}
+
+.langs-compact__chev {
+  color: var(--muted);
+  transition: transform 0.15s ease;
+}
+
+.langs-compact[open] .langs-compact__chev {
+  transform: rotate(180deg);
+}
+
+.langs-compact__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-end: 0;
+  z-index: 60;
+  min-width: 172px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+}
+
+.langs-compact__menu a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.langs-compact__menu a:lang(hi) {
+  font-family: var(--font-devanagari), var(--font-text);
+}
+
+.langs-compact__menu a:hover {
+  background: var(--bg-tint);
+}
+
+.langs-compact__menu a[aria-current="true"] {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+[data-theme="dark"] .langs-compact__menu a[aria-current="true"] {
+  background: var(--on-ink);
+  color: var(--ink);
+}
+
+@media (max-width: 440px) {
+  .langs {
+    display: none;
+  }
+  .langs-compact {
+    display: block;
+  }
 }
 
 .hdr__panel {
@@ -1433,6 +1571,27 @@ a.channel:hover {
   margin-top: 8px;
   font-weight: 700;
   font-size: 1.2rem;
+}
+
+.btn--whatsapp {
+  background: #0b7a6c;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.btn--whatsapp:hover {
+  background: #08665a;
+}
+
+.form-done:focus {
+  outline: none;
+}
+
+.form-done__hint {
+  max-width: 44ch;
+  margin-bottom: 12px;
+  font-size: 0.88rem;
+  color: var(--muted);
 }
 
 .form-done__text {
